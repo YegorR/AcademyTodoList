@@ -45,4 +45,10 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="3" author="YegorR">
+        <!-- liquibase ignores check constraint by tag, so there is SQL -->
+        <sql>
+            ALTER TABLE task ADD CONSTRAINT priority_check CHECK (priority &gt;= 0 AND priority &lt;= 4)
+        </sql>
+    </changeSet>
 </databaseChangeLog>
