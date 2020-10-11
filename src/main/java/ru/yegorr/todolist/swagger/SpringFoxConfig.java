@@ -6,7 +6,9 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 /**
  * Config for Swagger
@@ -38,7 +40,7 @@ public class SpringFoxConfig {
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+                .paths(PathSelectors.any().and(PathSelectors.regex("/error").negate()))
                 .build();
     }
 }
