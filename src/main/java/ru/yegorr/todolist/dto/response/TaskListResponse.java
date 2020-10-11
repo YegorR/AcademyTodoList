@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 /**
- * Response for task list
+ * Task list response for create or change task list
  */
 @Data
 public class TaskListResponse {
