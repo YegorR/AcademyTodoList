@@ -33,7 +33,6 @@ public class TaskEntity {
     private boolean done;
 
     @ManyToOne
-    @JoinColumn(name = "id")
-    @Column(name = "task_list_id")
+    @JoinColumn(name = "task_list_id")
     private TaskListEntity taskList;
 }
