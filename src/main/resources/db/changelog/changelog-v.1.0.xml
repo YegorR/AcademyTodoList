@@ -35,10 +35,13 @@
             </column>
             <column name="description" type="VARCHAR(4096)"/>
             <column name="priority" type="SMALLINT">
+                <constraints nullable="false" checkConstraint="CHECK (priority &gt;= 0 AND priority &lt;= 4)"/>
+            </column>
+            <column name="done" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="done" type="BOOLEAN">
-                <constraints nullable="false"/>
+            <column name="taskList" type="INTEGER">
+                <constraints nullable="false" references="list(id)" deleteCascade="true" foreignKeyName="fk_task_list"/>
             </column>
         </createTable>
     </changeSet>
