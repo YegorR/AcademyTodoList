@@ -1,4 +1,4 @@
-package ru.yegorr.todolist.dto.cors;
+package ru.yegorr.todolist.cors;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
