@@ -28,7 +28,7 @@ public class TaskListController {
             @ApiResponse(code = 200, message = "The lists are returned")
     })
     public ListsResponse getLists(
-            @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result") byte limit,
+            @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result") Byte limit,
             @RequestParam(value = "sort", required = false)
             @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted")
                     String sort,
