@@ -2,6 +2,7 @@ package ru.yegorr.todolist.service;
 
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
+import ru.yegorr.todolist.exception.NotFoundException;
 
 /**
  * Service for task lists
@@ -24,7 +25,7 @@ public interface TaskListService {
      * @param listId list id
      * @return list with tasks
      */
-    FullTaskListResponse getList(long listId);
+    FullTaskListResponse getList(long listId) throws NotFoundException;
 
     /**
      * Creates new list
@@ -41,11 +42,11 @@ public interface TaskListService {
      * @param listId      list id
      * @return changed list data
      */
-    TaskListResponse changeList(ListRequest listRequest, long listId);
+    TaskListResponse changeList(ListRequest listRequest, long listId) throws NotFoundException;
 
     /**
      * Deletes the list
      * @param listId list id
      */
-    void deleteList(long listId);
+    void deleteList(long listId) throws NotFoundException;
 }
