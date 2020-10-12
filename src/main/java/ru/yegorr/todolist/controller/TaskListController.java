@@ -98,8 +98,8 @@ public class TaskListController {
     })
     public TaskListResponse changeList(
             @RequestBody @ApiParam("List data for changing") ListRequest taskList, @PathVariable("id") @ApiParam("List id") long listId
-    ) {
-        return null;
+    ) throws NotFoundException {
+        return taskListService.changeList(taskList, listId);
     }
 
     /**

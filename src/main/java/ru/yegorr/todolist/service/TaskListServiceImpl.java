@@ -97,7 +97,11 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public TaskListResponse changeList(ListRequest listRequest, long listId) throws NotFoundException {
-        return null;
+        TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
+        taskList.setName(listRequest.getName());
+        taskList.setUpdateDate(LocalDate.now());
+        taskListRepository.save(taskList);
+        return generateTaskListResponse(taskList);
     }
 
     @Override
