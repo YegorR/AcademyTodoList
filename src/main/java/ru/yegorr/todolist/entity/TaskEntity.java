@@ -32,6 +32,9 @@ public class TaskEntity {
     @Column(name = "done")
     private boolean done;
 
+    @Column(name = "priority")
+    private byte priority;
+
     @ManyToOne
     @JoinColumn(name = "task_list_id")
     private TaskListEntity taskList;
