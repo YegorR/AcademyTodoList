@@ -1,11 +1,13 @@
 package ru.yegorr.todolist.controller;
 
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
+import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.service.TaskListService;
 
 /**
  * Controller for task lists request
@@ -13,6 +15,18 @@ import ru.yegorr.todolist.dto.response.*;
 @RestController
 @Api(tags = {"Lists"})
 public class TaskListController {
+
+    private final TaskListService taskListService;
+
+    /**
+     * Constructor
+     *
+     * @param taskListService taskListService
+     */
+    @Autowired
+    public TaskListController(TaskListService taskListService) {
+        this.taskListService = taskListService;
+    }
 
     /**
      * Returns all lists
@@ -49,8 +63,8 @@ public class TaskListController {
             @ApiResponse(code = 200, message = "The list is returned"),
             @ApiResponse(code = 404, message = "The list is not found")
     })
-    public FullTaskListResponse getList(@PathVariable("id") @ApiParam("List id") long listId) {
-        return null;
+    public FullTaskListResponse getList(@PathVariable("id") @ApiParam("List id") long listId) throws NotFoundException {
+        return taskListService.getList(listId);
     }
 
     /**
@@ -66,7 +80,7 @@ public class TaskListController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public TaskListResponse createList(@RequestBody @ApiParam("New list data") ListRequest taskList) {
-        return null;
+        return taskListService.createList(taskList);
     }
 
     /**
