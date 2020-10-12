@@ -1,13 +1,16 @@
 package ru.yegorr.todolist.controller;
 
-import org.springframework.http.ResponseEntity;
+import io.swagger.annotations.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.*;
+import ru.yegorr.todolist.dto.response.TaskResponse;
 
 /**
  * Controller for tasks requests
  */
 @RestController
+@Api(tags = "Tasks")
 public class TaskController {
 
     /**
@@ -17,7 +20,13 @@ public class TaskController {
      * @return TaskResponse
      */
     @PostMapping("/task")
-    public ResponseEntity<?> createTask(@RequestBody CreateTaskRequest createTaskRequest) {
+    @ApiOperation("Create new task")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "The task is created"),
+            @ApiResponse(code = 404, message = "The list is not found")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    public TaskResponse createTask(@RequestBody @ApiParam("New task data") CreateTaskRequest createTaskRequest) {
         return null;
     }
 
@@ -29,29 +38,46 @@ public class TaskController {
      * @return TaskResponse
      */
     @PutMapping("/task/{id}")
-    public ResponseEntity<?> changeTask(@RequestBody ChangeTaskRequest changeTaskRequest, @PathVariable("id") long taskId) {
+    @ApiOperation("Change the task")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "The task is changed"),
+            @ApiResponse(code = 404, message = "The task or the list is not found")
+    })
+    public TaskResponse changeTask(
+            @RequestBody @ApiParam("Task data for changing") ChangeTaskRequest changeTaskRequest, @PathVariable("id") @ApiParam("Task id") long taskId
+    ) {
         return null;
     }
 
     /**
-     * Do the task done
+     * Mark the task done
      *
      * @param taskId task id
-     * @return no body
      */
     @PostMapping("/mark-done/{id}")
-    public ResponseEntity<?> markDone(@PathVariable("id") long taskId) {
-        return null;
+    @ApiOperation("Mark the task done")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "The task is marked"),
+            @ApiResponse(code = 404, message = "The task is not found")
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void markDone(@PathVariable("id") @ApiParam("Task id") long taskId) {
+
     }
 
     /**
      * Delete the task
      *
      * @param taskId task id
-     * @return no body
      */
     @DeleteMapping("/task/{id}")
-    public ResponseEntity<?> deleteTask(@PathVariable("id") long taskId) {
-        return null;
+    @ApiOperation("Delete the task")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "The task is removed"),
+            @ApiResponse(code = 404, message = "The task is not found")
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable("id") @ApiParam("Task id") long taskId) {
+
     }
 }

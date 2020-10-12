@@ -1,13 +1,17 @@
 package ru.yegorr.todolist.controller;
 
+import io.swagger.annotations.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 import ru.yegorr.todolist.dto.request.ListRequest;
+import ru.yegorr.todolist.dto.response.*;
 
 /**
  * Controller for task lists request
  */
 @RestController
+@Api(tags = {"Lists"})
 public class TaskListController {
 
     /**
@@ -19,9 +23,16 @@ public class TaskListController {
      * @return ListsResponse
      */
     @GetMapping("/lists")
-    public EntityResponse<?> getLists(
-            @RequestParam(value = "limit", required = false) byte limit, @RequestParam(value = "sort", required = false) String sort,
-            @RequestParam(value = "filter", required = false) String filter
+    @ApiOperation("Get lists")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "The lists are returned")
+    })
+    public ListsResponse getLists(
+            @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result") byte limit,
+            @RequestParam(value = "sort", required = false)
+            @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted")
+                    String sort,
+            @RequestParam(value = "filter", required = false) @ApiParam(example = "name='Important'", value = "Filter of results") String filter
     ) {
         return null;
     }
@@ -33,7 +44,12 @@ public class TaskListController {
      * @return FullTaskListResponse
      */
     @GetMapping("/list/{id}")
-    public EntityResponse<?> getList(@PathVariable("id") long listId) {
+    @ApiOperation("Get list")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "The list is returned"),
+            @ApiResponse(code = 404, message = "The list is not found")
+    })
+    public FullTaskListResponse getList(@PathVariable("id") @ApiParam("List id") long listId) {
         return null;
     }
 
@@ -44,19 +60,31 @@ public class TaskListController {
      * @return TaskListResponse
      */
     @PostMapping("/list")
-    public EntityResponse<?> createList(@RequestBody ListRequest taskList) {
+    @ApiOperation(value = "Creates new list")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "The list is created")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    public TaskListResponse createList(@RequestBody @ApiParam("New list data") ListRequest taskList) {
         return null;
     }
 
     /**
      * Change the list
      *
-     * @param taskList name of new list
+     * @param taskList list data for changing
      * @param listId   list id
      * @return TaskListResponse
      */
     @PutMapping("/list/{id}")
-    public EntityResponse<?> changeList(@RequestBody ListRequest taskList, @PathVariable("id") long listId) {
+    @ApiOperation("Change the list")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "The list is changed"),
+            @ApiResponse(code = 404, message = "The list is not found")
+    })
+    public TaskListResponse changeList(
+            @RequestBody @ApiParam("List data for changing") ListRequest taskList, @PathVariable("id") @ApiParam("List id") long listId
+    ) {
         return null;
     }
 
@@ -64,10 +92,15 @@ public class TaskListController {
      * Delete the list
      *
      * @param listId list id
-     * @return no body
      */
     @DeleteMapping("/list/{id}")
-    public EntityResponse<?> deleteList(@PathVariable("id") long listId) {
-        return null;
+    @ApiOperation("Delete the list")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "The list and its tasks are removed"),
+            @ApiResponse(code = 404, message = "The list is not found")
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteList(@PathVariable("id") @ApiParam("List id") long listId) {
+
     }
 }

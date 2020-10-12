@@ -41,6 +41,6 @@ public class SpringFoxConfig {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any().and(PathSelectors.regex("/error").negate()))
-                .build();
+                .build().useDefaultResponseMessages(false);
     }
 }
