@@ -48,7 +48,7 @@ public class TaskListController {
                     String sort,
             @RequestParam(value = "filter", required = false) @ApiParam(example = "name='Important'", value = "Filter of results") String filter
     ) {
-        return null;
+        return taskListService.getLists(limit, sort, filter);
     }
 
     /**

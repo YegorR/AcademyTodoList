@@ -10,6 +10,8 @@ import ru.yegorr.todolist.repository.TaskListRepository;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of TaskListService
@@ -29,9 +31,17 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskListRepository = taskListRepository;
     }
 
+    // TODO: limit, sort, filter, opened and closed count
     @Override
     public ListsResponse getLists(Byte limit, String sort, String filter) {
-        return null;
+        List<TaskListResponse> listOfLists = taskListRepository.findAll().stream()
+                .map(TaskListServiceImpl::generateTaskListResponse)
+                .collect(Collectors.toList());
+        ListsResponse listsResponse = new ListsResponse();
+        listsResponse.setOpenedListsCount(-1);
+        listsResponse.setClosedListCount(-1);
+        listsResponse.setLists(listOfLists);
+        return listsResponse;
     }
 
     // TODO: task sorting
