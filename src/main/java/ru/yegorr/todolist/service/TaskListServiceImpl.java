@@ -2,6 +2,7 @@ package ru.yegorr.todolist.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
@@ -10,13 +11,13 @@ import ru.yegorr.todolist.repository.TaskListRepository;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Implementation of TaskListService
  */
 @Service
+@Transactional
 public class TaskListServiceImpl implements TaskListService {
 
     private final TaskListRepository taskListRepository;
@@ -101,7 +102,6 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public void deleteList(long listId) throws NotFoundException {
-
     }
 
     private static TaskListResponse generateTaskListResponse(TaskListEntity entity) {
