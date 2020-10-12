@@ -102,6 +102,11 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public void deleteList(long listId) throws NotFoundException {
+        if (!taskListRepository.existsById(listId)) {
+            throw new NotFoundException(String.format("List %d", listId));
+        }
+
+        taskListRepository.deleteById(listId);
     }
 
     private static TaskListResponse generateTaskListResponse(TaskListEntity entity) {

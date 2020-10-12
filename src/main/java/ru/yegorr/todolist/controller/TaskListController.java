@@ -114,7 +114,7 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "The list is not found")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteList(@PathVariable("id") @ApiParam("List id") long listId) {
-
+    public void deleteList(@PathVariable("id") @ApiParam("List id") long listId) throws NotFoundException {
+        taskListService.deleteList(listId);
     }
 }
