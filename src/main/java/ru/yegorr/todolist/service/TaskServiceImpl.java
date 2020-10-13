@@ -82,10 +82,8 @@ public class TaskServiceImpl implements TaskService {
             newTaskList.getTasks().add(task);
             oldTaskList.getTasks().remove(task);
             task.setTaskList(newTaskList);
-            taskListRepository.saveAll(Arrays.asList(newTaskList, oldTaskList));
         }
 
-        task = taskRepository.save(task);
         return generateTaskResponseFromEntity(task);
     }
 
