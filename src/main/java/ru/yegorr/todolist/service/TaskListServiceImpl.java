@@ -61,9 +61,9 @@ public class TaskListServiceImpl implements TaskListService {
         int closedTasksCount = 0;
         for (TaskEntity task : taskList.getTasks()) {
             if (task.isDone()) {
-                openedTasksCount++;
-            } else {
                 closedTasksCount++;
+            } else {
+                openedTasksCount++;
             }
             TaskResponse taskResponse = new TaskResponse();
             taskResponse.setId(task.getId());
