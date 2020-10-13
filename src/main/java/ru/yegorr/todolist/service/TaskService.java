@@ -32,4 +32,10 @@ public interface TaskService {
      * @param taskId task id
      */
     void deleteTask(long taskId) throws NotFoundException;
+
+    /**
+     * Marks the task as done
+     * @param taskId task id
+     */
+    void markDone(long taskId) throws NotFoundException;
 }
