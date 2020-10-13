@@ -10,7 +10,7 @@ import ru.yegorr.todolist.exception.NotFoundException;
 import ru.yegorr.todolist.repository.*;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Implementation of TaskService
@@ -76,9 +76,13 @@ public class TaskServiceImpl implements TaskService {
 
         long oldListId = task.getTaskList().getId();
         if (oldListId != changeTaskRequest.getListId()) {
-            TaskListEntity newTaskList = new TaskListEntity();
-            newTaskList.setId(task.getTaskList().getId());
+            TaskListEntity newTaskList = taskListRepository.findById(changeTaskRequest.getListId()).orElseThrow(
+                    () -> new NotFoundException(String.format("List %d", changeTaskRequest.getListId())));
+            TaskListEntity oldTaskList = task.getTaskList();
+            newTaskList.getTasks().add(task);
+            oldTaskList.getTasks().remove(task);
             task.setTaskList(newTaskList);
+            taskListRepository.saveAll(Arrays.asList(newTaskList, oldTaskList));
         }
 
         task = taskRepository.save(task);
