@@ -9,6 +9,8 @@ import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.exception.NotFoundException;
 import ru.yegorr.todolist.service.TaskListService;
 
+import javax.validation.Valid;
+
 /**
  * Controller for task lists request
  */
@@ -79,7 +81,7 @@ public class TaskListController {
             @ApiResponse(code = 201, message = "The list is created")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskListResponse createList(@RequestBody @ApiParam("New list data") ListRequest taskList) {
+    public TaskListResponse createList(@RequestBody @ApiParam("New list data") @Valid ListRequest taskList) {
         return taskListService.createList(taskList);
     }
 
@@ -97,7 +99,7 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "The list is not found")
     })
     public TaskListResponse changeList(
-            @RequestBody @ApiParam("List data for changing") ListRequest taskList, @PathVariable("id") @ApiParam("List id") long listId
+            @RequestBody @ApiParam("List data for changing") @Valid ListRequest taskList, @PathVariable("id") @ApiParam("List id") long listId
     ) throws NotFoundException {
         return taskListService.changeList(taskList, listId);
     }
