@@ -76,8 +76,8 @@ public class TaskController {
             @ApiResponse(code = 404, message = "The task is not found")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markDone(@PathVariable("id") @ApiParam("Task id") long taskId) {
-
+    public void markDone(@PathVariable("id") @ApiParam("Task id") long taskId) throws NotFoundException {
+        taskService.markDone(taskId);
     }
 
     /**
