@@ -1,10 +1,13 @@
 package ru.yegorr.todolist.controller;
 
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.TaskResponse;
+import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.service.TaskService;
 
 /**
  * Controller for tasks requests
@@ -12,6 +15,18 @@ import ru.yegorr.todolist.dto.response.TaskResponse;
 @RestController
 @Api(tags = "Tasks")
 public class TaskController {
+
+    private final TaskService taskService;
+
+    /**
+     * Controller
+     *
+     * @param taskService taskService
+     */
+    @Autowired
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     /**
      * Creates new task
@@ -26,8 +41,8 @@ public class TaskController {
             @ApiResponse(code = 404, message = "The list is not found")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponse createTask(@RequestBody @ApiParam("New task data") CreateTaskRequest createTaskRequest) {
-        return null;
+    public TaskResponse createTask(@RequestBody @ApiParam("New task data") CreateTaskRequest createTaskRequest) throws NotFoundException {
+        return taskService.createTask(createTaskRequest);
     }
 
     /**
@@ -45,8 +60,8 @@ public class TaskController {
     })
     public TaskResponse changeTask(
             @RequestBody @ApiParam("Task data for changing") ChangeTaskRequest changeTaskRequest, @PathVariable("id") @ApiParam("Task id") long taskId
-    ) {
-        return null;
+    ) throws NotFoundException {
+        return taskService.changeTask(changeTaskRequest, taskId);
     }
 
     /**
@@ -77,7 +92,7 @@ public class TaskController {
             @ApiResponse(code = 404, message = "The task is not found")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable("id") @ApiParam("Task id") long taskId) {
-
+    public void deleteTask(@PathVariable("id") @ApiParam("Task id") long taskId) throws NotFoundException {
+        taskService.deleteTask(taskId);
     }
 }
