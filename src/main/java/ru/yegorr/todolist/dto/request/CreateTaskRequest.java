@@ -15,14 +15,14 @@ public class CreateTaskRequest {
 
     private long listId;
 
-    @NotBlank
-    @Length(max = 4096)
+    @NotBlank(message = "{name.notblank}")
+    @Length(max = 4096, message = "{name.length}")
     private String name;
 
-    @Length(max = 4096)
+    @Length(max = 4096, message = "{description.length")
     private String description;
 
-    @Min(0)
-    @Max(4)
+    @Min(value = 0, message = "{priority.min}")
+    @Max(value = 4, message = "{priority.max}")
     private byte priority;
 }

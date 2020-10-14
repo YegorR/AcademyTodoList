@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @ApiModel(value = "ListRequest", description = "List data for creating or changing")
 public class ListRequest {
-    @NotBlank
-    @Length(max = 4096)
+    @NotBlank(message = "{name.notblank}")
+    @Length(max = 4096, message = "{name.length}")
     private String name;
 }

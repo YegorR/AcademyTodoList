@@ -2,6 +2,7 @@ package ru.yegorr.todolist.controller.errorhandling;
 
 import org.springframework.http.*;
 import org.springframework.http.converter.*;
+import org.springframework.validation.*;
 import org.springframework.web.*;
 import org.springframework.web.bind.*;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +45,20 @@ public class ErrorHandler {
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
     private static ResponseEntity<Object> handleHttpMessageNotReadable() {
-        return generateDefaultExceptionResponse("Server can not read the http message", HttpStatus.BAD_REQUEST);
+        return generateDefaultExceptionResponse("Server can not read the http message, maybe wrong type?", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     private static ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        return generateDefaultExceptionResponse(String.format("%s(%s) parameter validation fails", ex.getParameter().getParameterName(),
-                ex.getParameter().getParameterType().getSimpleName()
-        ), HttpStatus.BAD_REQUEST);
+        StringBuilder errorString = new StringBuilder();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errorString.append(String.format("%s: %s ", error.getField(), error.getDefaultMessage()));
+        }
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            errorString.append(String.format("%s: %s ", error.getObjectName(), error.getDefaultMessage()));
+        }
+
+        return generateDefaultExceptionResponse(String.format("Validation fails: %s", errorString.toString()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NotFoundException.class})
