@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.yegorr.todolist.dto.response.ExceptionResponse;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 
 import javax.validation.*;
 
@@ -92,6 +92,11 @@ public class ErrorHandler {
     @ExceptionHandler({NoHandlerFoundException.class})
     private static ResponseEntity<Object> handleNoHandlerFound() {
         return generateDefaultExceptionResponse("The page is not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ValidationFailsException.class})
+    private static ResponseEntity<Object> handleValidationFails(ValidationFailsException ex) {
+        return generateDefaultExceptionResponse(String.format("Validation fails. %s", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     private static ResponseEntity<Object> generateDefaultExceptionResponse(String message, HttpStatus httpStatus) {
