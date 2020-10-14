@@ -1,5 +1,6 @@
 package ru.yegorr.todolist.controller.errorhandling;
 
+import io.swagger.models.Response;
 import org.springframework.http.*;
 import org.springframework.http.converter.*;
 import org.springframework.validation.*;
@@ -10,6 +11,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.yegorr.todolist.dto.response.ExceptionResponse;
 import ru.yegorr.todolist.exception.NotFoundException;
+
+import javax.validation.*;
 
 /**
  * Handler of application exceptions
@@ -52,13 +55,23 @@ public class ErrorHandler {
     private static ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         StringBuilder errorString = new StringBuilder();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errorString.append(String.format("%s: %s ", error.getField(), error.getDefaultMessage()));
+            errorString.append(String.format(" %s.", error.getDefaultMessage()));
         }
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-            errorString.append(String.format("%s: %s ", error.getObjectName(), error.getDefaultMessage()));
+            errorString.append(String.format(" %s.", error.getDefaultMessage()));
         }
 
-        return generateDefaultExceptionResponse(String.format("Validation fails: %s", errorString.toString()), HttpStatus.BAD_REQUEST);
+        return generateDefaultExceptionResponse(String.format("Validation fails.%s", errorString.toString()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    private static ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        StringBuilder errorString = new StringBuilder();
+        for (ConstraintViolation<?> error : ex.getConstraintViolations()) {
+            errorString.append(String.format(" %s.", error.getMessage()));
+        }
+
+        return generateDefaultExceptionResponse(String.format("Validation fails.%s", errorString.toString()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NotFoundException.class})

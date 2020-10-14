@@ -1,6 +1,7 @@
 package ru.yegorr.todolist.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.ListRequest;
@@ -34,8 +35,14 @@ public class TaskListServiceImpl implements TaskListService {
 
     // TODO: limit, sort, filter, opened and closed count
     @Override
-    public ListsResponse getLists(Byte limit, String sort, String filter) {
-        List<TaskListResponse> listOfLists = taskListRepository.findAll().stream()
+    public ListsResponse getLists(Integer limit, String sort, String filter) {
+        if (limit == null) {
+            limit = 10;
+        } else if (limit > 100) {
+            limit = 10;
+        }
+
+        List<TaskListResponse> listOfLists = taskListRepository.findAll(PageRequest.of(0, limit)).stream()
                 .map(TaskListServiceImpl::generateTaskListResponse)
                 .collect(Collectors.toList());
         ListsResponse listsResponse = new ListsResponse();

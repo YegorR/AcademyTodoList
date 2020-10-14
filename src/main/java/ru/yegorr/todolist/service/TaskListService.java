@@ -17,7 +17,7 @@ public interface TaskListService {
      * @param filter how lists must be filtered, nullable
      * @return all lists satisfying limit, sort and filter
      */
-    ListsResponse getLists(Byte limit, String sort, String filter);
+    ListsResponse getLists(Integer limit, String sort, String filter);
 
     /**
      * Gets list with tasks

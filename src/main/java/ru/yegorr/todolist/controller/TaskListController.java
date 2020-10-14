@@ -3,6 +3,7 @@ package ru.yegorr.todolist.controller;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
@@ -10,12 +11,14 @@ import ru.yegorr.todolist.exception.NotFoundException;
 import ru.yegorr.todolist.service.TaskListService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 
 /**
  * Controller for task lists request
  */
 @RestController
 @Api(tags = {"Lists"})
+@Validated
 public class TaskListController {
 
     private final TaskListService taskListService;
@@ -44,7 +47,8 @@ public class TaskListController {
             @ApiResponse(code = 200, message = "The lists are returned")
     })
     public ListsResponse getLists(
-            @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result") Byte limit,
+            @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result")
+            @Positive(message = "{limit.positive}") Integer limit,
             @RequestParam(value = "sort", required = false)
             @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted")
                     String sort,
