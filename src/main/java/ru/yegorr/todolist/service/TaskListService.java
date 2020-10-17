@@ -17,7 +17,7 @@ public interface TaskListService {
      * @param filter how lists must be filtered, nullable
      * @return all lists satisfying limit, sort and filter
      */
-    ListsResponse getLists(Integer limit, String sort, String filter) throws ValidationFailsException;
+    ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException;
 
     /**
      * Gets list with tasks

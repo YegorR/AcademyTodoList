@@ -57,7 +57,7 @@ public class OffsetLimitRequest implements Pageable {
 
     @Override
     public long getOffset() {
-        return limit;
+        return offset;
     }
 
     @Override

@@ -9,6 +9,7 @@ import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.*;
+import ru.yegorr.todolist.service.paging.OffsetLimitRequest;
 import ru.yegorr.todolist.service.sorting.ListsSorter;
 
 import java.time.LocalDate;
@@ -42,11 +43,14 @@ public class TaskListServiceImpl implements TaskListService {
 
     // TODO: limit, sort, filter, opened and closed count
     @Override
-    public ListsResponse getLists(Integer limit, String sort, String filter) throws ValidationFailsException {
+    public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException {
         if (limit == null) {
             limit = 10;
         } else if (limit > 100) {
             limit = 10;
+        }
+        if (offset == null) {
+            offset = 0;
         }
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
@@ -56,7 +60,7 @@ public class TaskListServiceImpl implements TaskListService {
             orders = List.of(Sort.Order.desc("updateDate"));
         }
 
-        List<TaskListResponse> listOfLists = taskListRepository.findAll(PageRequest.of(0, limit, Sort.by(orders))).stream()
+        List<TaskListResponse> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).stream()
                 .map(TaskListServiceImpl::generateTaskListResponse)
                 .collect(Collectors.toList());
         ListsResponse listsResponse = new ListsResponse();
