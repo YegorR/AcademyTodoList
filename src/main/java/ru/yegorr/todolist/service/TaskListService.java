@@ -25,7 +25,7 @@ public interface TaskListService {
      * @param listId list id
      * @return list with tasks
      */
-    FullTaskListResponse getList(long listId) throws NotFoundException;
+    FullTaskListResponse getList(long listId, Integer limit, String sort) throws NotFoundException, ValidationFailsException;
 
     /**
      * Creates new list

@@ -69,8 +69,13 @@ public class TaskListController {
             @ApiResponse(code = 200, message = "The list is returned"),
             @ApiResponse(code = 404, message = "The list is not found")
     })
-    public FullTaskListResponse getList(@PathVariable("id") @ApiParam("List id") long listId) throws NotFoundException {
-        return taskListService.getList(listId);
+    public FullTaskListResponse getList(
+            @PathVariable("id") @ApiParam("List id") long listId,
+            @RequestParam(required = false) @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted") String sort,
+            @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result")
+            @Positive(message = "{limit.positive}") Integer limit
+    ) throws NotFoundException, ValidationFailsException {
+        return taskListService.getList(listId, limit, sort);
     }
 
     /**

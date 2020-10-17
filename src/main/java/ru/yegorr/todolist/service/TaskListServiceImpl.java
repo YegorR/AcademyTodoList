@@ -8,7 +8,7 @@ import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.*;
-import ru.yegorr.todolist.repository.TaskListRepository;
+import ru.yegorr.todolist.repository.*;
 import ru.yegorr.todolist.service.sorting.ListsSorter;
 
 import java.time.LocalDate;
@@ -24,16 +24,20 @@ public class TaskListServiceImpl implements TaskListService {
 
     private final TaskListRepository taskListRepository;
 
+    private final TaskRepository taskRepository;
+
     private ListsSorter listsSorter;
 
     /**
      * Constructor
      *
      * @param taskListRepository taskListRepository
+     * @param taskRepository     taskRepository
      */
     @Autowired
-    public TaskListServiceImpl(TaskListRepository taskListRepository) {
+    public TaskListServiceImpl(TaskListRepository taskListRepository, TaskRepository taskRepository) {
         this.taskListRepository = taskListRepository;
+        this.taskRepository = taskRepository;
     }
 
     // TODO: limit, sort, filter, opened and closed count
@@ -64,7 +68,7 @@ public class TaskListServiceImpl implements TaskListService {
 
     // TODO: task sorting
     @Override
-    public FullTaskListResponse getList(long listId) throws NotFoundException {
+    public FullTaskListResponse getList(long listId, Integer limit, String sort) throws NotFoundException, ValidationFailsException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
 
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
@@ -73,10 +77,25 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setCreationDate(taskList.getCreationDate());
         fullTaskListResponse.setUpdateDate(taskList.getUpdateDate());
 
+        if (limit == null) {
+            limit = 10;
+        } else if (limit > 100) {
+            limit = 10;
+        }
+
+        List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
+                "update_date", "updateDate", "creation_date", "creationDate", "name", "name",
+                "done", "done", "priority", "priority"
+        ));
+        if (orders == null) {
+            orders = List.of(Sort.Order.desc("updateDate"));
+        }
+        List<TaskEntity> tasksEntities = taskRepository.findAllByTaskList_Id(listId, PageRequest.of(0, limit, Sort.by(orders)));
+
         List<TaskResponse> tasks = new ArrayList<>();
         int openedTasksCount = 0;
         int closedTasksCount = 0;
-        for (TaskEntity task : taskList.getTasks()) {
+        for (TaskEntity task : tasksEntities) {
             if (task.isDone()) {
                 closedTasksCount++;
             } else {
