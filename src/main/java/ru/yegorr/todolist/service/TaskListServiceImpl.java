@@ -70,7 +70,6 @@ public class TaskListServiceImpl implements TaskListService {
         return listsResponse;
     }
 
-    // TODO: task sorting
     @Override
     public FullTaskListResponse getList(long listId, Integer limit, Integer offset, String sort) throws NotFoundException, ValidationFailsException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
