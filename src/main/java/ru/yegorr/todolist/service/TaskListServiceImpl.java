@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.TaskListRepository;
+import ru.yegorr.todolist.service.sorting.ListsSorter;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -23,6 +24,8 @@ public class TaskListServiceImpl implements TaskListService {
 
     private final TaskListRepository taskListRepository;
 
+    private ListsSorter listsSorter;
+
     /**
      * Constructor
      *
@@ -35,14 +38,21 @@ public class TaskListServiceImpl implements TaskListService {
 
     // TODO: limit, sort, filter, opened and closed count
     @Override
-    public ListsResponse getLists(Integer limit, String sort, String filter) {
+    public ListsResponse getLists(Integer limit, String sort, String filter) throws ValidationFailsException {
         if (limit == null) {
             limit = 10;
         } else if (limit > 100) {
             limit = 10;
         }
 
-        List<TaskListResponse> listOfLists = taskListRepository.findAll(PageRequest.of(0, limit)).stream()
+        List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
+                "update_date", "updateDate", "creation_date", "creationDate", "name", "name"
+        ));
+        if (orders == null) {
+            orders = List.of(Sort.Order.desc("updateDate"));
+        }
+
+        List<TaskListResponse> listOfLists = taskListRepository.findAll(PageRequest.of(0, limit, Sort.by(orders))).stream()
                 .map(TaskListServiceImpl::generateTaskListResponse)
                 .collect(Collectors.toList());
         ListsResponse listsResponse = new ListsResponse();
@@ -126,5 +136,15 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setCreationDate(entity.getCreationDate());
         taskListResponse.setUpdateDate(entity.getUpdateDate());
         return taskListResponse;
+    }
+
+    /**
+     * Set listsSorter
+     *
+     * @param listsSorter listSorter
+     */
+    @Autowired
+    public void setListsSorter(ListsSorter listsSorter) {
+        this.listsSorter = listsSorter;
     }
 }

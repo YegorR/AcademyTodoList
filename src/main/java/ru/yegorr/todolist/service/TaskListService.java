@@ -2,7 +2,7 @@ package ru.yegorr.todolist.service;
 
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 
 /**
  * Service for task lists
@@ -17,7 +17,7 @@ public interface TaskListService {
      * @param filter how lists must be filtered, nullable
      * @return all lists satisfying limit, sort and filter
      */
-    ListsResponse getLists(Integer limit, String sort, String filter);
+    ListsResponse getLists(Integer limit, String sort, String filter) throws ValidationFailsException;
 
     /**
      * Gets list with tasks

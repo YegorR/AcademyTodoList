@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.service.TaskListService;
 
 import javax.validation.Valid;
@@ -53,7 +53,7 @@ public class TaskListController {
             @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted")
                     String sort,
             @RequestParam(value = "filter", required = false) @ApiParam(example = "name='Important'", value = "Filter of results") String filter
-    ) {
+    ) throws ValidationFailsException {
         return taskListService.getLists(limit, sort, filter);
     }
 

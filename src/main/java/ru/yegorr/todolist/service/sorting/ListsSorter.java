@@ -1,102 +1,81 @@
 package ru.yegorr.todolist.service.sorting;
 
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Component;
 import ru.yegorr.todolist.exception.ValidationFailsException;
 
 import java.util.*;
+import java.util.regex.*;
 
+import static org.springframework.data.domain.Sort.Order;
+
+/**
+ * Do Sort.Orders with sorting query
+ */
 @Component
-@Slf4j
 public class ListsSorter {
 
-    private enum Property {
-        UPDATEDATE("updateDate"), CREATIONDATE("creationDate"), NAME("name");
-
-        private final String propertyName;
-
-        Property(String propertyName) {
-            this.propertyName = propertyName;
-        }
-
-        public String getPropertyName() {
-            return propertyName;
-        }
-
-        public static Property getByPropertyName(String propertyName) {
-            for (Property prop : values()) {
-                if (prop.propertyName.equals(propertyName)) {
-                    return prop;
-                }
-            }
-            return null;
-        }
-    }
-
-    private static final String PROPERTY_REGEXP_GROUP;
-
-    static {
-        StringBuilder group = new StringBuilder("^(");
-        for (Property prop : Property.values()) {
-            group.append("|").append(prop.propertyName);
-        }
-        group.deleteCharAt(2);
-        group.append(")");
-        PROPERTY_REGEXP_GROUP = group.toString();
-    }
-
     /**
-     * Parses sortQuery to get orders
+     * Do Sort.Orders for sortQuery
      *
-     * @param sortQuery sort query from client
-     * @return orders
+     * @param sortQuery sort Query
+     * @param props map, where key - property in query, value - property in entity
+     * @return List Sort.Order; null - if there is no sortQuery
      * @throws ValidationFailsException if validation fails
      */
-    public List<Order> handleSortQuery(String sortQuery) throws ValidationFailsException {
+    public List<Order> handleSortQuery(String sortQuery, Map<String, String> props) throws ValidationFailsException {
         if (sortQuery == null || sortQuery.trim().isEmpty()) {
-            log.debug("SortQuery is empty");
-            return List.of(Order.desc(Property.UPDATEDATE.getPropertyName()));
+            return null;
         }
 
         sortQuery = sortQuery.trim().toLowerCase().replaceAll("\\s+", "");
-        Scanner scanner = new Scanner(sortQuery);
-        Set<Property> usedProperties = EnumSet.noneOf(Property.class);
+        StringBuilder queryBuilder = new StringBuilder(sortQuery);
+        Set<String> usedProperties = new HashSet<>();
         List<Order> orderList = new ArrayList<>();
+        final Pattern propertyGroupPattern = getPropertyRegexpGroup(props.keySet());
+        final Pattern ascDescGroupPattern = Pattern.compile(":(asc|desc)");
+
         while (true) {
-            if (scanner.hasNext(PROPERTY_REGEXP_GROUP)) {
+            Matcher matcher = propertyGroupPattern.matcher(queryBuilder.toString());
+            if (!matcher.find()) {
                 throw new ValidationFailsException("Wrong sorting query");
             }
-            String property = scanner.next(PROPERTY_REGEXP_GROUP);
-            log.debug("Sorting property is {}", property);
-            if (usedProperties.contains(Property.getByPropertyName(property))) {
+            String property = matcher.group(0);
+            if (usedProperties.contains(property)) {
                 throw new ValidationFailsException(String.format("Doubling field '%s' in sorting", property));
             }
-            usedProperties.add(Property.getByPropertyName(property));
+            usedProperties.add(property);
+            queryBuilder.delete(0, matcher.end(0));
 
-            if (scanner.hasNext(":(asc|desc)")) {
-                scanner.next(":");
-                String order = scanner.next("(asc|desc)");
-                if ("asc".equals(order)) {
-                    log.debug("Property orders by asc");
-                    orderList.add(Order.asc(property));
+            matcher = ascDescGroupPattern.matcher(queryBuilder.toString());
+            if (matcher.find()) {
+                if (":asc".equals(matcher.group(0))) {
+                    orderList.add(Order.asc(props.get(property)));
                 } else {
-                    log.debug("Property orders by desc");
-                    orderList.add(Order.desc(property));
+                    orderList.add(Order.desc(props.get(property)));
                 }
+                queryBuilder.delete(0, matcher.end(0));
             } else {
-                log.debug("Property orders by asc");
-                orderList.add(Order.asc(property));
+                orderList.add(Order.asc(props.get(property)));
             }
 
-            if (!scanner.hasNext()) {
+            if (queryBuilder.toString().isEmpty()) {
                 return orderList;
             }
 
-            if (!scanner.hasNext("\\|")) {
+            if (queryBuilder.indexOf(",") != 0) {
                 throw new ValidationFailsException("Wrong sorting query");
             }
-            scanner.next("\\|");
+            queryBuilder.deleteCharAt(0);
         }
+    }
+
+    private static Pattern getPropertyRegexpGroup(Iterable<String> props) {
+        StringBuilder group = new StringBuilder("^(");
+        for (String prop : props) {
+            group.append("|").append(prop);
+        }
+        group.deleteCharAt(2);
+        group.append(")");
+        return Pattern.compile(group.toString());
     }
 }
