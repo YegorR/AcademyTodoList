@@ -72,8 +72,16 @@ public class TaskListServiceImpl implements TaskListService {
 
     // TODO: task sorting
     @Override
-    public FullTaskListResponse getList(long listId, Integer limit, String sort) throws NotFoundException, ValidationFailsException {
+    public FullTaskListResponse getList(long listId, Integer limit, Integer offset, String sort) throws NotFoundException, ValidationFailsException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
+
+        List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
+                "update_date", "updateDate", "creation_date", "creationDate", "name", "name",
+                "done", "done", "priority", "priority"
+        ));
+        if (orders == null) {
+            orders = List.of(Sort.Order.desc("updateDate"));
+        }
 
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
         fullTaskListResponse.setId(taskList.getId());
@@ -86,15 +94,11 @@ public class TaskListServiceImpl implements TaskListService {
         } else if (limit > 100) {
             limit = 10;
         }
-
-        List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                "update_date", "updateDate", "creation_date", "creationDate", "name", "name",
-                "done", "done", "priority", "priority"
-        ));
-        if (orders == null) {
-            orders = List.of(Sort.Order.desc("updateDate"));
+        if (offset == null) {
+            offset = 0;
         }
-        List<TaskEntity> tasksEntities = taskRepository.findAllByTaskList_Id(listId, PageRequest.of(0, limit, Sort.by(orders)));
+
+        List<TaskEntity> tasksEntities = taskRepository.findAllByTaskList_Id(listId, new OffsetLimitRequest(offset, limit, Sort.by(orders)));
 
         List<TaskResponse> tasks = new ArrayList<>();
         int openedTasksCount = 0;

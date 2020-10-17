@@ -75,9 +75,11 @@ public class TaskListController {
             @PathVariable("id") @ApiParam("List id") long listId,
             @RequestParam(required = false) @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted") String sort,
             @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result")
-            @Positive(message = "{limit.positive}") Integer limit
+            @Positive(message = "{limit.positive}") Integer limit,
+            @RequestParam(value = "offset", required = false) @ApiParam(example = "0", value = "Offset") @PositiveOrZero(message = "{offset.positive_or_zero}")
+                    Integer offset
     ) throws NotFoundException, ValidationFailsException {
-        return taskListService.getList(listId, limit, sort);
+        return taskListService.getList(listId, limit, offset, sort);
     }
 
     /**
