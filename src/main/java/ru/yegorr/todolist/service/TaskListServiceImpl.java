@@ -1,5 +1,6 @@
 package ru.yegorr.todolist.service;
 
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskRepository = taskRepository;
     }
 
-    // TODO: limit, sort, filter, opened and closed count
+    // TODO: filter
     @Override
     public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException {
         if (limit == null) {
@@ -60,14 +61,49 @@ public class TaskListServiceImpl implements TaskListService {
             orders = List.of(Sort.Order.desc("updateDate"));
         }
 
-        List<TaskListResponse> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).stream()
+        List<TaskListEntity> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).toList();
+        OpenedAndClosedListsCount openedAndClosedLists = countOpenedAndClosedLists(listOfLists);
+        List<TaskListResponse> taskListResponseList = listOfLists.stream()
                 .map(TaskListServiceImpl::generateTaskListResponse)
                 .collect(Collectors.toList());
         ListsResponse listsResponse = new ListsResponse();
-        listsResponse.setOpenedListsCount(-1);
-        listsResponse.setClosedListCount(-1);
-        listsResponse.setLists(listOfLists);
+        listsResponse.setOpenedListsCount(openedAndClosedLists.getOpenedListsCount());
+        listsResponse.setClosedListCount(openedAndClosedLists.getClosedListsCount());
+        listsResponse.setLists(taskListResponseList);
         return listsResponse;
+    }
+
+    @Value
+    private static class OpenedAndClosedListsCount {
+
+        int openedListsCount;
+
+        int closedListsCount;
+    }
+
+    private static OpenedAndClosedListsCount countOpenedAndClosedLists(List<TaskListEntity> lists) {
+        int openedListsCount = 0;
+        int closedListsCount = 0;
+        for (TaskListEntity taskList : lists) {
+            if (taskList.getTasks().isEmpty()) {
+                continue;
+            }
+            if (isListOpened(taskList)) {
+                openedListsCount++;
+            } else {
+                closedListsCount++;
+            }
+        }
+        return new OpenedAndClosedListsCount(openedListsCount, closedListsCount);
+    }
+
+    private static boolean isListOpened(TaskListEntity taskList) {
+        for (TaskEntity task : taskList.getTasks()) {
+            if (!task.isDone()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
