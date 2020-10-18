@@ -84,8 +84,8 @@ UML-диаграмма классов сущностей показана ниж
     		{
     			"id": 1,
     			"name": "Мой хороший список",
-    			"creationDate": 28-09-2020,
-    			"updateDate": 29-09-2020
+    			"creationDate": "28-09-2020",
+    			"updateDate": "29-09-2020"
     		},
     		...
     	]
@@ -112,8 +112,8 @@ name должен быть непустой строкой (c учётом *trim
     {
     	"id": 1,
     	"name": "Мой хороший список",
-    	"creationDate": 28-09-2020,
-    	"updateDate": 28-09-2020
+    	"creationDate": "28-09-2020",
+    	"updateDate": "28-09-2020"
     }
 
 
@@ -136,8 +136,8 @@ name должен быть непустой строкой (c учётом *trim
     {
     	"id": 1,
     	"name": "Мой плохой список",
-    	"creationDate": 28-09-2020,
-    	"updateDate": 29-09-2020
+    	"creationDate": "28-09-2020",
+    	"updateDate": "29-09-2020"
     }
 
 Списка *id* не существует: 404.
@@ -176,16 +176,16 @@ name должен быть непустой строкой (c учётом *trim
     {
     	"id": 1,
     	"name": "Мой хороший список",
-    	"creationDate": 28-09-2020,
-    	"updateDate": 29-09-2020,
+    	"creationDate": "28-09-2020",
+    	"updateDate": "29-09-2020",
     	"closedTasksCount": 1,
     	"openedTasksCount": 2,
     	"tasks": [
     		{
     			"id": 2,
     			"listId": 1,
-    			"creationDate": 30-11-2020,
-    			"updateDate": 1-12-2020,
+    			"creationDate": "30-11-2020",
+    			"updateDate": "01-12-2020",
     			"name": "Написать курсовую",
     			"description": "Необходимо написать курсовую",
     			"priority": 2,
@@ -220,8 +220,8 @@ name должен быть непустой строкой (c учётом *trim
     {
     	"id": 2,
     	"listId": 1,
-    	"creationDate": 30-11-2020,
-    	"updateDate": 30-11-2020,
+    	"creationDate": "30-11-2020",
+    	"updateDate": "30-11-2020",
     	"name": "Написать курсовую",
     	"description": "Необходимо написать курсовую",
     	"priority": 2,
@@ -254,8 +254,8 @@ name должен быть непустой строкой (c учётом *trim
     {
     	"id": 2,
     	"listId": 2,
-    	"creationDate": 30-11-2020,
-    	"updateDate": 30-11-2020,
+    	"creationDate": "30-11-2020",
+    	"updateDate": "30-11-2020",
     	"name": "Написать курсовую",
     	"description": "Необходимо написать курсовую",
     	"priority": 2,
@@ -288,6 +288,3 @@ name должен быть непустой строкой (c учётом *trim
 Успешно: 204.
 
 Дела *id* не существует: 404.
-
-
-
