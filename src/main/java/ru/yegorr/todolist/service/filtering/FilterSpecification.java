@@ -25,9 +25,9 @@ public class FilterSpecification<T> implements Specification<T> {
     }
 
     private Predicate[] getPredicatesFromActions(List<Action> actions, Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        return (Predicate[])actions.stream()
+        return actions.stream()
                 .map(act -> new FilterSpecification<T>(act).toPredicate(root, query, criteriaBuilder))
-                .toArray();
+                .toArray(Predicate[]::new);
     }
 
     @Override
