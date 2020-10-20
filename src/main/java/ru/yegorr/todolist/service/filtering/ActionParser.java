@@ -51,7 +51,11 @@ public class ActionParser {
 
         Scanner scanner = new Scanner(filter);
         try {
-            return readAction(scanner);
+            Action action =  readAction(scanner);
+            if (scanner.hasNext()) {
+                throw new ValidationFailsException("Wrong filter");
+            }
+            return action;
         } catch (NoSuchElementException ex) {
             throw new ValidationFailsException("Wrong filter");
         }
@@ -104,11 +108,11 @@ public class ActionParser {
                 if (!scanner.hasNext("'.*")) {
                     throw new ValidationFailsException("Wrong filter");
                 }
-                String value = scanner.findInLine("'.*?\\\\{0}'");
+                String value = scanner.findInLine("'.*?[^\\\\]'");
                 if (value == null) {
                     throw new ValidationFailsException("Wrong filter");
                 }
-                return value.substring(1, value.length() - 1);
+                return value.substring(1, value.length() - 1).replace("\\\\'", "'");
             }
             case INTEGER -> {
                 return scanner.nextInt();
