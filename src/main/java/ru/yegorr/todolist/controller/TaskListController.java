@@ -52,7 +52,7 @@ public class TaskListController {
             @RequestParam(value = "sort", required = false)
             @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted")
                     String sort,
-            @RequestParam(value = "filter", required = false) @ApiParam(example = "name='Important'", value = "Filter of results") String filter,
+            @RequestParam(value = "filter", required = false) @ApiParam(example = "like name 'Important'", value = "Filter of results") String filter,
             @RequestParam(value = "offset", required = false) @ApiParam(example = "0", value = "Offset") @PositiveOrZero(message = "{offset.positive_or_zero}")
                     Integer offset
     ) throws ValidationFailsException {
