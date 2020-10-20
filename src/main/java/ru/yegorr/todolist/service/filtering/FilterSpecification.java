@@ -33,6 +33,9 @@ public class FilterSpecification<T> implements Specification<T> {
     public Predicate toPredicate(
             Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder
     ) {
+        if (action == null) {
+            return null;
+        }
         return switch (action.getActionType()) {
             case AND -> criteriaBuilder.and(getPredicatesFromActions(action.getActions(), root, query, criteriaBuilder));
             case OR -> criteriaBuilder.or(getPredicatesFromActions(action.getActions(), root, query, criteriaBuilder));
