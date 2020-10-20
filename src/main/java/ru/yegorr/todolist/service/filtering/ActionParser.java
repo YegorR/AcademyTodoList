@@ -112,7 +112,7 @@ public class ActionParser {
                 if (value == null) {
                     throw new ValidationFailsException("Wrong filter");
                 }
-                return value.substring(1, value.length() - 1).replace("\\\\'", "'");
+                return value.substring(1, value.length() - 1).replace("\\'", "'");
             }
             case INTEGER -> {
                 return scanner.nextInt();
