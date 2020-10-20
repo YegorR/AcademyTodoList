@@ -84,7 +84,8 @@ public class TaskListServiceImpl implements TaskListService {
 
         //List<TaskListEntity> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).toList();
 
-        List<TaskListEntity> listOfLists = taskListRepository.findAll(new FilterSpecification<>(listsActionParser.parse(filter)),
+        List<TaskListEntity> listOfLists = taskListRepository.findAll(
+                new FilterSpecification<>(listsActionParser.parse(filter)),
                 new OffsetLimitRequest(offset, limit, Sort.by(orders))
         ).toList();
         OpenedAndClosedListsCount openedAndClosedLists = countOpenedAndClosedLists(listOfLists);
@@ -132,7 +133,8 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public FullTaskListResponse getList(long listId, Integer limit, Integer offset, String sort) throws NotFoundException, ValidationFailsException {
+    public FullTaskListResponse getList(long listId, Integer limit, String sort, String filter, Integer offset)
+            throws NotFoundException, ValidationFailsException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
@@ -158,7 +160,13 @@ public class TaskListServiceImpl implements TaskListService {
             offset = 0;
         }
 
-        List<TaskEntity> tasksEntities = taskRepository.findAllByTaskList_Id(listId, new OffsetLimitRequest(offset, limit, Sort.by(orders)));
+        List<TaskEntity> tasksEntities = taskRepository.findAll(
+                new FilterSpecification<>(
+                        tasksActionParser.parse(filter),
+                        (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("taskList"), listId)
+                ),
+                new OffsetLimitRequest(offset, limit, Sort.by(orders))
+        ).stream().collect(Collectors.toList());
 
         List<TaskResponse> tasks = new ArrayList<>();
         int openedTasksCount = 0;

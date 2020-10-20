@@ -15,13 +15,20 @@ public class FilterSpecification<T> implements Specification<T> {
 
     private final Action action;
 
+    private final Specification<T> additionalCondition;
+
     /**
      * Constructor
      *
      * @param action action
      */
     public FilterSpecification(Action action) {
+        this(action, null);
+    }
+
+    public FilterSpecification(Action action, Specification<T> additionalCondition) {
         this.action = action;
+        this.additionalCondition = additionalCondition;
     }
 
     private Predicate[] getPredicatesFromActions(List<Action> actions, Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -34,10 +41,16 @@ public class FilterSpecification<T> implements Specification<T> {
     public Predicate toPredicate(
             Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder
     ) {
-        if (action == null) {
-            return null;
+        Predicate condition;
+        if (additionalCondition != null) {
+            condition = additionalCondition.toPredicate(root, query, criteriaBuilder);
+        } else {
+            condition = criteriaBuilder.and();
         }
-        return switch (action.getActionType()) {
+        if (action == null) {
+            return condition;
+        }
+        Predicate result =  switch (action.getActionType()) {
             case AND -> criteriaBuilder.and(getPredicatesFromActions(action.getActions(), root, query, criteriaBuilder));
             case OR -> criteriaBuilder.or(getPredicatesFromActions(action.getActions(), root, query, criteriaBuilder));
             case NOT -> criteriaBuilder.not(new FilterSpecification<T>(action.getActions().get(0)).toPredicate(root, query, criteriaBuilder));
@@ -66,6 +79,8 @@ public class FilterSpecification<T> implements Specification<T> {
                 yield criteriaBuilder.like(criteriaBuilder.upper(root.get(action.getProperty())), String.format("%%%s%%", str.toUpperCase()));
             }
         };
+
+        return criteriaBuilder.and(result, condition);
     }
 
     private <Y extends Comparable<? super Y>> Predicate moreOrLessPredicate(Root<T> root, CriteriaBuilder criteriaBuilder, Y object) {

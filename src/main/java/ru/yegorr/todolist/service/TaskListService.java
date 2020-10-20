@@ -15,17 +15,25 @@ public interface TaskListService {
      * @param limit  max count of lists, if more 100 than 10
      * @param sort   how lists must be sorted, nullable
      * @param filter how lists must be filtered, nullable
-     * @return all lists satisfying limit, sort and filter
+     * @param offset number of the first result, nullable
+     * @return all lists satisfying limit, offset, sort and filter
+     * @throws ValidationFailsException filter or sort wrong
      */
     ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException;
 
     /**
-     * Gets list with tasks
+     * Get list and its tasks
      *
      * @param listId list id
-     * @return list with tasks
+     * @param limit  max count of lists, if more 100 than 10
+     * @param sort   how lists must be sorted, nullable
+     * @param filter how lists must be filtered, nullable
+     * @param offset number of the first result, nullable
+     * @return list and its tasks satisfying limit, offset, sort and filter
+     * @throws NotFoundException no list with this id
+     * @throws ValidationFailsException filter or sort wrong
      */
-    FullTaskListResponse getList(long listId, Integer limit, Integer offset, String sort) throws NotFoundException, ValidationFailsException;
+    FullTaskListResponse getList(long listId, Integer limit, String sort, String filter, Integer offset) throws NotFoundException, ValidationFailsException;
 
     /**
      * Creates new list
