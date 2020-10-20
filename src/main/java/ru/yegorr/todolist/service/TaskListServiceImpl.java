@@ -63,7 +63,6 @@ public class TaskListServiceImpl implements TaskListService {
         );
     }
 
-    // TODO: filter
     @Override
     public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException {
         if (limit == null) {
@@ -81,8 +80,6 @@ public class TaskListServiceImpl implements TaskListService {
         if (orders == null) {
             orders = List.of(Sort.Order.desc("updateDate"));
         }
-
-        //List<TaskListEntity> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).toList();
 
         List<TaskListEntity> listOfLists = taskListRepository.findAll(
                 new FilterSpecification<>(listsActionParser.parse(filter)),
@@ -161,10 +158,7 @@ public class TaskListServiceImpl implements TaskListService {
         }
 
         List<TaskEntity> tasksEntities = taskRepository.findAll(
-                new FilterSpecification<>(
-                        tasksActionParser.parse(filter),
-                        (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("taskList"), listId)
-                ),
+                new FilterSpecification<>(tasksActionParser.parse(filter), listId, "taskList"),
                 new OffsetLimitRequest(offset, limit, Sort.by(orders))
         ).stream().collect(Collectors.toList());
 
