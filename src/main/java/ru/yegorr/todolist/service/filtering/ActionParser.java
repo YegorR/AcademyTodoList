@@ -5,7 +5,6 @@ import ru.yegorr.todolist.exception.ValidationFailsException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static ru.yegorr.todolist.service.filtering.Action.ActionType.*;
 
@@ -13,6 +12,7 @@ import static ru.yegorr.todolist.service.filtering.Action.ActionType.*;
  * Reads condition from filter query
  */
 public class ActionParser {
+
     public enum PropertyType {
         STRING, INTEGER, DATE, BOOLEAN
     }
@@ -24,7 +24,7 @@ public class ActionParser {
     /**
      * Constructor
      *
-     * @param propType mapping property in entity - type
+     * @param propType   mapping property in entity - type
      * @param properties mapping property in query - property in entity
      */
     public ActionParser(Map<String, PropertyType> propType, Map<String, String> properties) {
@@ -45,7 +45,7 @@ public class ActionParser {
         }
 
         filter = filter.trim().toLowerCase();
-        for (String prop: properties.keySet()) {
+        for (String prop : properties.keySet()) {
             filter = filter.replaceAll(prop, properties.get(prop));
         }
 
@@ -55,7 +55,6 @@ public class ActionParser {
         } catch (NoSuchElementException ex) {
             throw new ValidationFailsException("Wrong filter");
         }
-
     }
 
     private Action readAction(Scanner scanner) throws ValidationFailsException {
@@ -71,7 +70,7 @@ public class ActionParser {
             case "!" -> NOT;
             default -> throw new ValidationFailsException("Wrong filter");
         };
-        
+
         switch (actionType) {
             case AND, OR -> {
                 Action action1 = readAction(scanner);
@@ -91,9 +90,6 @@ public class ActionParser {
     }
 
     private Action readFinalAction(Scanner scanner, Action.ActionType actionType) throws ValidationFailsException {
-        if (!scanner.hasNext()) {
-            throw new ValidationFailsException("Wrong filter");
-        }
         String prop = scanner.next();
         if (!propType.containsKey(prop)) {
             throw new ValidationFailsException("Wrong filter");
@@ -102,28 +98,17 @@ public class ActionParser {
         return new Action(actionType, prop, value);
     }
 
-
     private static Object readValue(Scanner scanner, ActionParser.PropertyType propertyType) throws ValidationFailsException {
         switch (propertyType) {
             case STRING -> {
-                Pattern defaultDelimiter = scanner.delimiter();
-                try {
-                    scanner.useDelimiter("");
-                    String firstChar = scanner.next();
-                    if (!"'".equals(firstChar)) {
-                        throw new ValidationFailsException("Wrong filter");
-                    }
-                    scanner.useDelimiter("\\\\{0}'");
-                    String value = scanner.next();
-                    scanner.useDelimiter("");
-                    String lastChar = scanner.next();
-                    if (!"'".equals(lastChar)) {
-                        throw new ValidationFailsException("Wrong filter");
-                    }
-                    return value;
-                } finally {
-                    scanner.useDelimiter(defaultDelimiter);
+                if (!scanner.hasNext("'.*")) {
+                    throw new ValidationFailsException("Wrong filter");
                 }
+                String value = scanner.findInLine("'.*?\\\\{0}'");
+                if (value == null) {
+                    throw new ValidationFailsException("Wrong filter");
+                }
+                return value.substring(1, value.length() - 1);
             }
             case INTEGER -> {
                 return scanner.nextInt();
