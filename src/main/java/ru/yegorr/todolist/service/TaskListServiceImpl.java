@@ -2,7 +2,7 @@ package ru.yegorr.todolist.service;
 
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.ListRequest;
@@ -10,6 +10,7 @@ import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.*;
+import ru.yegorr.todolist.service.filtering.*;
 import ru.yegorr.todolist.service.paging.OffsetLimitRequest;
 import ru.yegorr.todolist.service.sorting.ListsSorter;
 
@@ -30,6 +31,8 @@ public class TaskListServiceImpl implements TaskListService {
 
     private ListsSorter listsSorter;
 
+    private final ActionParser listsActionParser, tasksActionParser;
+
     /**
      * Constructor
      *
@@ -40,6 +43,24 @@ public class TaskListServiceImpl implements TaskListService {
     public TaskListServiceImpl(TaskListRepository taskListRepository, TaskRepository taskRepository) {
         this.taskListRepository = taskListRepository;
         this.taskRepository = taskRepository;
+
+        listsActionParser = new ActionParser(
+                Map.of("creationDate", ActionParser.PropertyType.DATE,
+                        "updateDate", ActionParser.PropertyType.DATE,
+                        "name", ActionParser.PropertyType.STRING
+                ),
+                Map.of("creation_date", "creationDate", "update_date", "updateDate")
+        );
+
+        tasksActionParser = new ActionParser(
+                Map.of("creationDate", ActionParser.PropertyType.DATE,
+                        "updateDate", ActionParser.PropertyType.DATE,
+                        "name", ActionParser.PropertyType.STRING,
+                        "priority", ActionParser.PropertyType.INTEGER,
+                        "done", ActionParser.PropertyType.BOOLEAN
+                ),
+                Map.of("creation_date", "creationDate", "update_date", "updateDate")
+        );
     }
 
     // TODO: filter
@@ -61,7 +82,11 @@ public class TaskListServiceImpl implements TaskListService {
             orders = List.of(Sort.Order.desc("updateDate"));
         }
 
-        List<TaskListEntity> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).toList();
+        //List<TaskListEntity> listOfLists = taskListRepository.findAll(new OffsetLimitRequest(offset, limit, Sort.by(orders))).toList();
+
+        List<TaskListEntity> listOfLists = taskListRepository.findAll(new FilterSpecification<>(listsActionParser.parse(filter)),
+                new OffsetLimitRequest(offset, limit, Sort.by(orders))
+        ).toList();
         OpenedAndClosedListsCount openedAndClosedLists = countOpenedAndClosedLists(listOfLists);
         List<TaskListResponse> taskListResponseList = listOfLists.stream()
                 .map(TaskListServiceImpl::generateTaskListResponse)
