@@ -12,7 +12,7 @@ import java.util.List;
 public class Action {
 
     public enum ActionType {
-        AND, OR, NOT, EQUAL, MORE, LESS, MORE_OR_EQUAL, LESS_OR_EQUAL, NOT_EQUAL
+        AND, OR, NOT, EQUAL, MORE, LESS, MORE_OR_EQUAL, LESS_OR_EQUAL, NOT_EQUAL, LIKE
     }
 
     /**

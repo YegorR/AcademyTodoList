@@ -1,7 +1,6 @@
 package ru.yegorr.todolist.service.filtering;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.yegorr.todolist.exception.ValidationFailsException;
 
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
@@ -58,6 +57,14 @@ public class FilterSpecification<T> implements Specification<T> {
                     throw new IllegalStateException("Unexpected value type in filter");
                 }
             }
+            case LIKE -> {
+                Object value = action.getValue();
+                if (!(value instanceof String)) {
+                    throw new IllegalStateException(action.getProperty() + " must be string");
+                }
+                String str = (String) value;
+                yield criteriaBuilder.like(criteriaBuilder.upper(root.get(action.getProperty())), String.format("%%%s%%", str.toUpperCase()));
+            }
         };
     }
 
@@ -67,7 +74,7 @@ public class FilterSpecification<T> implements Specification<T> {
             case LESS -> criteriaBuilder.lessThan(root.get(action.getProperty()), object);
             case MORE_OR_EQUAL -> criteriaBuilder.greaterThanOrEqualTo(root.get(action.getProperty()), object);
             case LESS_OR_EQUAL -> criteriaBuilder.lessThanOrEqualTo(root.get(action.getProperty()), object);
-            default -> throw new IllegalStateException("Not exception state: " + action.getActionType());
+            default -> throw new IllegalStateException("Not excepted state: " + action.getActionType());
         };
     }
 }

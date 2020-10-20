@@ -44,7 +44,7 @@ public class ActionParser {
             return null;
         }
 
-        filter = filter.trim().toLowerCase();
+        filter = filter.trim();
         for (String prop : properties.keySet()) {
             filter = filter.replaceAll(prop, properties.get(prop));
         }
@@ -72,6 +72,7 @@ public class ActionParser {
             case "&" -> AND;
             case "|" -> OR;
             case "!" -> NOT;
+            case "like" -> LIKE;
             default -> throw new ValidationFailsException("Wrong filter");
         };
 
@@ -85,7 +86,7 @@ public class ActionParser {
                 Action action = readAction(scanner);
                 return new Action(actionType, List.of(action));
             }
-            case EQUAL, MORE, LESS, MORE_OR_EQUAL, LESS_OR_EQUAL -> {
+            case EQUAL, MORE, LESS, MORE_OR_EQUAL, LESS_OR_EQUAL, LIKE -> {
                 return readFinalAction(scanner, actionType);
             }
 
