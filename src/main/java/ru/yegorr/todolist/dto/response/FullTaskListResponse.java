@@ -29,5 +29,7 @@ public class FullTaskListResponse {
 
     private int openedTasksCount;
 
+    private long totalTasksCount;
+
     private List<TaskResponse> tasks;
 }

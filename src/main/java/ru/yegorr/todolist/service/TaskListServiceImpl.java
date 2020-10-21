@@ -151,6 +151,8 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setCreationDate(taskList.getCreationDate());
         fullTaskListResponse.setUpdateDate(taskList.getUpdateDate());
 
+        long totalTasksCount = taskRepository.countAllByTaskList_Id(listId);
+
         if (limit == null) {
             limit = 10;
         } else if (limit > 100) {
@@ -188,6 +190,7 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setOpenedTasksCount(openedTasksCount);
         fullTaskListResponse.setClosedTasksCount(closedTasksCount);
         fullTaskListResponse.setTasks(tasks);
+        fullTaskListResponse.setTotalTasksCount(totalTasksCount);
         return fullTaskListResponse;
     }
 
