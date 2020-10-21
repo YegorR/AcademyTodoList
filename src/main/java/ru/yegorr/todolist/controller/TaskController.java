@@ -10,6 +10,7 @@ import ru.yegorr.todolist.exception.NotFoundException;
 import ru.yegorr.todolist.service.TaskService;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 /**
  * Controller for tasks requests
@@ -61,7 +62,7 @@ public class TaskController {
             @ApiResponse(code = 404, message = "The task or the list is not found")
     })
     public TaskResponse changeTask(
-            @RequestBody @ApiParam("Task data for changing") @Valid ChangeTaskRequest changeTaskRequest, @PathVariable("id") @ApiParam("Task id") long taskId
+            @RequestBody @ApiParam("Task data for changing") @Valid ChangeTaskRequest changeTaskRequest, @PathVariable("id") @ApiParam("Task id") UUID taskId
     ) throws NotFoundException {
         return taskService.changeTask(changeTaskRequest, taskId);
     }
@@ -78,7 +79,7 @@ public class TaskController {
             @ApiResponse(code = 404, message = "The task is not found")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markDone(@PathVariable("id") @ApiParam("Task id") long taskId) throws NotFoundException {
+    public void markDone(@PathVariable("id") @ApiParam("Task id") UUID taskId) throws NotFoundException {
         taskService.markDone(taskId);
     }
 
@@ -94,7 +95,7 @@ public class TaskController {
             @ApiResponse(code = 404, message = "The task is not found")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable("id") @ApiParam("Task id") long taskId) throws NotFoundException {
+    public void deleteTask(@PathVariable("id") @ApiParam("Task id") UUID taskId) throws NotFoundException {
         taskService.deleteTask(taskId);
     }
 }

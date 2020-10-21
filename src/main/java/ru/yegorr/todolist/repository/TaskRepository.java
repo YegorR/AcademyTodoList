@@ -4,10 +4,12 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 import ru.yegorr.todolist.entity.TaskEntity;
 
+import java.util.UUID;
+
 /**
  * Repository for tasks
  */
 @Repository
-public interface TaskRepository extends JpaRepository<TaskEntity, Long>, JpaSpecificationExecutor<TaskEntity> {
+public interface TaskRepository extends JpaRepository<TaskEntity, UUID>, JpaSpecificationExecutor<TaskEntity> {
 
 }

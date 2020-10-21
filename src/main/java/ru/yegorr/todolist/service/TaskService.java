@@ -4,6 +4,8 @@ import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.TaskResponse;
 import ru.yegorr.todolist.exception.NotFoundException;
 
+import java.util.UUID;
+
 /**
  * Service for tasks
  */
@@ -24,18 +26,18 @@ public interface TaskService {
      * @param taskId            task id
      * @return changed task data
      */
-    TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, long taskId) throws NotFoundException;
+    TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId) throws NotFoundException;
 
     /**
      * Deletes the task
      *
      * @param taskId task id
      */
-    void deleteTask(long taskId) throws NotFoundException;
+    void deleteTask(UUID taskId) throws NotFoundException;
 
     /**
      * Marks the task as done
      * @param taskId task id
      */
-    void markDone(long taskId) throws NotFoundException;
+    void markDone(UUID taskId) throws NotFoundException;
 }

@@ -12,6 +12,7 @@ import ru.yegorr.todolist.service.TaskListService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 /**
  * Controller for task lists request
@@ -72,7 +73,7 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "The list is not found")
     })
     public FullTaskListResponse getList(
-            @PathVariable("id") @ApiParam("List id") long listId,
+            @PathVariable("id") @ApiParam("List id") UUID listId,
             @RequestParam(required = false) @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted") String sort,
             @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result")
             @Positive(message = "{limit.positive}") Integer limit,
@@ -113,7 +114,7 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "The list is not found")
     })
     public TaskListResponse changeList(
-            @RequestBody @ApiParam("List data for changing") @Valid ListRequest taskList, @PathVariable("id") @ApiParam("List id") long listId
+            @RequestBody @ApiParam("List data for changing") @Valid ListRequest taskList, @PathVariable("id") @ApiParam("List id") UUID listId
     ) throws NotFoundException {
         return taskListService.changeList(taskList, listId);
     }
@@ -130,7 +131,7 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "The list is not found")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteList(@PathVariable("id") @ApiParam("List id") long listId) throws NotFoundException {
+    public void deleteList(@PathVariable("id") @ApiParam("List id") UUID listId) throws NotFoundException {
         taskListService.deleteList(listId);
     }
 }

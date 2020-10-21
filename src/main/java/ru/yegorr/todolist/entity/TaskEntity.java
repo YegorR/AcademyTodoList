@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Task entity
@@ -14,8 +15,7 @@ import java.time.LocalDate;
 public class TaskEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private UUID id;
 
     @Column(name = "creation_date")
     private LocalDate creationDate;

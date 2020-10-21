@@ -130,9 +130,9 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public FullTaskListResponse getList(long listId, Integer limit, String sort, String filter, Integer offset)
+    public FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset)
             throws NotFoundException, ValidationFailsException {
-        TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
+        TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
                 "update_date", "updateDate", "creation_date", "creationDate", "name", "name",
@@ -196,23 +196,24 @@ public class TaskListServiceImpl implements TaskListService {
         taskList.setName(listRequest.getName());
         taskList.setCreationDate(date);
         taskList.setUpdateDate(date);
+        taskList.setId(UUID.randomUUID());
         taskListRepository.save(taskList);
 
         return generateTaskListResponse(taskList);
     }
 
     @Override
-    public TaskListResponse changeList(ListRequest listRequest, long listId) throws NotFoundException {
-        TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %d", listId)));
+    public TaskListResponse changeList(ListRequest listRequest, UUID listId) throws NotFoundException {
+        TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         taskList.setName(listRequest.getName());
         taskList.setUpdateDate(LocalDate.now());
         return generateTaskListResponse(taskList);
     }
 
     @Override
-    public void deleteList(long listId) throws NotFoundException {
+    public void deleteList(UUID listId) throws NotFoundException {
         if (!taskListRepository.existsById(listId)) {
-            throw new NotFoundException(String.format("List %d", listId));
+            throw new NotFoundException(String.format("List %s", listId));
         }
 
         taskListRepository.deleteById(listId);

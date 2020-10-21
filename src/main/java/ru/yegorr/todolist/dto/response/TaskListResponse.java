@@ -6,6 +6,7 @@ import lombok.Data;
 import ru.yegorr.todolist.serializer.LocalDateSerializer;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Task list response for create or change task list
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @ApiModel(value = "BriefList", description = "Brief list information")
 public class TaskListResponse {
-    private long id;
+    private UUID id;
 
     private String name;
 

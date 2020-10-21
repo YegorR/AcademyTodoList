@@ -4,7 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 /**
  * Specification for filtering
@@ -15,7 +15,7 @@ public class FilterSpecification<T> implements Specification<T> {
 
     private final Action action;
 
-    private final Long foreignKey;
+    private final UUID foreignKey;
 
     private final String foreignParent;
 
@@ -35,7 +35,7 @@ public class FilterSpecification<T> implements Specification<T> {
      * @param foreignKey key value of parent
      * @param foreignParent property of parent
      */
-    public FilterSpecification(Action action, Long foreignKey, String foreignParent) {
+    public FilterSpecification(Action action, UUID foreignKey, String foreignParent) {
         this.action = action;
         this.foreignKey = foreignKey;
         this.foreignParent = foreignParent;
@@ -101,7 +101,7 @@ public class FilterSpecification<T> implements Specification<T> {
 
     private Predicate getForeignPredicate(Root<T> root, CriteriaBuilder criteriaBuilder) {
         if (foreignKey != null && foreignParent != null) {
-            return criteriaBuilder.equal(root.get(foreignParent), foreignKey);
+            return criteriaBuilder.equal(root.join(foreignParent).get("id"), foreignKey);
         } else {
             return criteriaBuilder.and();
         }

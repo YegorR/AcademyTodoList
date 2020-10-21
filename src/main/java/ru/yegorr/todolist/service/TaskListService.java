@@ -4,6 +4,8 @@ import ru.yegorr.todolist.dto.request.ListRequest;
 import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.exception.*;
 
+import java.util.UUID;
+
 /**
  * Service for task lists
  */
@@ -33,7 +35,7 @@ public interface TaskListService {
      * @throws NotFoundException no list with this id
      * @throws ValidationFailsException filter or sort wrong
      */
-    FullTaskListResponse getList(long listId, Integer limit, String sort, String filter, Integer offset) throws NotFoundException, ValidationFailsException;
+    FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset) throws NotFoundException, ValidationFailsException;
 
     /**
      * Creates new list
@@ -50,11 +52,11 @@ public interface TaskListService {
      * @param listId      list id
      * @return changed list data
      */
-    TaskListResponse changeList(ListRequest listRequest, long listId) throws NotFoundException;
+    TaskListResponse changeList(ListRequest listRequest, UUID listId) throws NotFoundException;
 
     /**
      * Deletes the list
      * @param listId list id
      */
-    void deleteList(long listId) throws NotFoundException;
+    void deleteList(UUID listId) throws NotFoundException;
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 /**
  * Change task request
@@ -13,7 +14,7 @@ import javax.validation.constraints.*;
 @ApiModel(value = "ChangeTask", description = "Task data for changing")
 public class ChangeTaskRequest {
 
-    private long listId;
+    private UUID listId;    //TODO: validation
 
     @NotBlank(message = "{name.notblank}")
     @Length(max = 4096, message="{name.length}")

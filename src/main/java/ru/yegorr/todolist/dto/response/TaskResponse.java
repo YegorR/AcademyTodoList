@@ -6,6 +6,7 @@ import lombok.Data;
 import ru.yegorr.todolist.serializer.LocalDateSerializer;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Response for task requests
@@ -14,9 +15,9 @@ import java.time.LocalDate;
 @ApiModel(value = "Task", description = "Task information")
 public class TaskResponse {
 
-    private long id;
+    private UUID id;
 
-    private long listId;
+    private UUID listId;
 
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate creationDate;

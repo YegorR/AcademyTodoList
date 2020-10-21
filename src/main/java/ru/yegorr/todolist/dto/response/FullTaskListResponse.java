@@ -6,7 +6,7 @@ import lombok.Data;
 import ru.yegorr.todolist.serializer.LocalDateSerializer;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 /**
  * Response for get list request
@@ -15,7 +15,7 @@ import java.util.List;
 @ApiModel(value = "List", description = "Full information about list and tasks in it")
 public class FullTaskListResponse {
 
-    private long id;
+    private UUID id;
 
     private String name;
 

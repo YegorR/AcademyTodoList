@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 /**
  * Create task request
@@ -13,7 +14,7 @@ import javax.validation.constraints.*;
 @ApiModel(value = "CreateTask", description = "Task data for creation")
 public class CreateTaskRequest {
 
-    private long listId;
+    private UUID listId; //TODO: validation
 
     @NotBlank(message = "{name.notblank}")
     @Length(max = 4096, message = "{name.length}")
