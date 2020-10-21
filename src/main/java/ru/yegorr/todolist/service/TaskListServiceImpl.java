@@ -85,6 +85,8 @@ public class TaskListServiceImpl implements TaskListService {
                 new FilterSpecification<>(listsActionParser.parse(filter)),
                 new OffsetLimitRequest(offset, limit, Sort.by(orders))
         ).toList();
+
+        long totalListCount = taskListRepository.count();
         OpenedAndClosedListsCount openedAndClosedLists = countOpenedAndClosedLists(listOfLists);
         List<TaskListResponse> taskListResponseList = listOfLists.stream()
                 .map(TaskListServiceImpl::generateTaskListResponse)
@@ -93,6 +95,7 @@ public class TaskListServiceImpl implements TaskListService {
         listsResponse.setOpenedListsCount(openedAndClosedLists.getOpenedListsCount());
         listsResponse.setClosedListCount(openedAndClosedLists.getClosedListsCount());
         listsResponse.setLists(taskListResponseList);
+        listsResponse.setTotalListsCount(totalListCount);
         return listsResponse;
     }
 

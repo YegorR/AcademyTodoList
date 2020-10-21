@@ -15,5 +15,7 @@ public class ListsResponse {
 
     private int closedListCount;
 
+    private long totalListsCount;
+
     private List<TaskListResponse> lists;
 }
