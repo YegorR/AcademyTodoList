@@ -14,7 +14,8 @@ import java.util.UUID;
 @ApiModel(value = "CreateTask", description = "Task data for creation")
 public class CreateTaskRequest {
 
-    private UUID listId; //TODO: validation
+    @NotNull(message = "{id.notnull}")
+    private UUID listId;
 
     @NotBlank(message = "{name.notblank}")
     @Length(max = 4096, message = "{name.length}")

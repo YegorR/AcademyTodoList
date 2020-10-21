@@ -14,7 +14,8 @@ import java.util.UUID;
 @ApiModel(value = "ChangeTask", description = "Task data for changing")
 public class ChangeTaskRequest {
 
-    private UUID listId;    //TODO: validation
+    @NotNull(message = "{id.notnull}")
+    private UUID listId;
 
     @NotBlank(message = "{name.notblank}")
     @Length(max = 4096, message="{name.length}")
