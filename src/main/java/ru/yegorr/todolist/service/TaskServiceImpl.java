@@ -49,6 +49,8 @@ public class TaskServiceImpl implements TaskService {
 
         TaskListEntity taskListEntity = new TaskListEntity();
         taskListEntity.setId(createTaskRequest.getListId());
+        // TODO(Шайдуко): тут лучше поднимать из репозитория, чем создавать новый объект,
+        //  хотя оно конечно работает и так
         task.setTaskList(taskListEntity);
 
         LocalDate date = LocalDate.now();

@@ -19,9 +19,11 @@ public class TaskListEntity {
 
     @Column(name = "creation_date")
     private LocalDate creationDate;
+    // TODO(Шайдуко): я бы исполозовал Date, чтоб было время. т.к. просто дата слишком больой промежуток
 
     @Column(name = "update_date")
     private LocalDate updateDate;
+    // TODO(Шайдуко): тоже что и выше
 
     @Column(name = "name")
     private String name;

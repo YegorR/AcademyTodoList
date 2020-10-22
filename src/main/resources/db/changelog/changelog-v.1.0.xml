@@ -3,6 +3,19 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+<!--
+        TODO(Шайдуко)
+        идентификатор changeSet тоже лучше сделать по типу имени файла
+        YYYYMMDDHHMMSS_цифра
+        так нужно чтоб понять, когда какая миграция писалась, птому что бывают случаи, когда не все changeSet-ы пишутся
+        в один день
+-->
+
+<!--
+        TODO(Шайдуко): вместо просто даты лучше использовать дату со временем - просто дата слишком большой промежуток
+-->
+
     <changeSet author="YegorR" id="1">
         <createTable tableName="list">
             <column autoIncrement="true" name="id" type="INTEGER">

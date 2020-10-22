@@ -72,7 +72,7 @@ public class TaskController {
      *
      * @param taskId task id
      */
-    @PostMapping("/mark-done/{id}")
+    @PostMapping("/mark-done/{id}") // TODO(Шайдуко): хоть так в задании и написано, но лучше использовать camelCase
     @ApiOperation("Mark the task done")
     @ApiResponses({
             @ApiResponse(code = 204, message = "The task is marked"),

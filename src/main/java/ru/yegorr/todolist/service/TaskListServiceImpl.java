@@ -70,6 +70,9 @@ public class TaskListServiceImpl implements TaskListService {
         } else if (limit > 100) {
             limit = 10;
         }
+        // TODO(Шайдуко): для 10 и 100 обозначенных вот так есть термин - магические константы.
+        //  их нужно вынести в из метода сделать static final и дать имя в формате UNDER_SCORE
+
         if (offset == null) {
             offset = 0;
         }
@@ -77,6 +80,9 @@ public class TaskListServiceImpl implements TaskListService {
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
                 "update_date", "updateDate", "creation_date", "creationDate", "name", "name"
         ));
+        // TODO(Шайдуко) со строками update_date, creation_date и т.д. кторые в коде используются более одного раза
+        //  следует поступить так же как как и с магическими константами - вынести их в нормальные константы
+
         if (orders == null) {
             orders = List.of(Sort.Order.desc("updateDate"));
         }

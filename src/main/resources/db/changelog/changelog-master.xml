@@ -5,4 +5,15 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <include file="changelog-v.1.0.xml" relativeToChangelogFile="true"/>
     <include file="changelog-v.1.1.xml" relativeToChangelogFile="true"/>
+    <!-- TODO(Шайдуко):
+            мы в своих проектах стараемся стараемся делать имена файлов миграций по принципу:
+            YYYYMMDDHHMMSS_text,
+            где text - осмысленная фраза в формате under_score на английском языке однозначно отвечающая на вопрос
+            что за миграции лежат в этом файле,
+            плюсы этого подхода:
+                * понятно когда писалась миграция (не нужно смотреть данные файла)
+                * миграции в редеве проекта стоят последовательно,
+                * понятно что внутри
+    -->
+
 </databaseChangeLog>
