@@ -18,6 +18,8 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//TODO: сделать что-то с маппингом свойств из запроса и свойств в entity
+
 /**
  * Implementation of TaskListService
  */
@@ -33,6 +35,16 @@ public class TaskListServiceImpl implements TaskListService {
 
     private final ActionParser listsActionParser, tasksActionParser;
 
+    private static final int DEFAULT_LIMIT = 10, MAX_LIMIT = 100;
+
+    private static final int DEFAULT_OFFSET = 0;
+
+    private static final String CREATION_TIME_PROPERTY = "creationTime", UPDATE_TIME_PROPERTY = "updateTime", NAME_PROPERTY = "name",
+            PRIORITY_PROPERTY = "priority", DONE_PROPERTY = "done";
+
+    private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time", NAME_QUERY = "name", PRIORITY_QUERY = "priority",
+            DONE_QUERY = "done";
+
     /**
      * Constructor
      *
@@ -45,46 +57,43 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskRepository = taskRepository;
 
         listsActionParser = new ActionParser(
-                Map.of("creationTime", ActionParser.PropertyType.TIME,
-                        "updateTime", ActionParser.PropertyType.TIME,
-                        "name", ActionParser.PropertyType.STRING
+                Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
+                        UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
+                        NAME_PROPERTY, ActionParser.PropertyType.STRING
                 ),
-                Map.of("creation_time", "creationTime", "update_time", "updateTime")
+                Map.of(CREATION_TIME_PROPERTY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY)
         );
 
         tasksActionParser = new ActionParser(
-                Map.of("creationTime", ActionParser.PropertyType.TIME,
-                        "updateTime", ActionParser.PropertyType.TIME,
-                        "name", ActionParser.PropertyType.STRING,
-                        "priority", ActionParser.PropertyType.INTEGER,
-                        "done", ActionParser.PropertyType.BOOLEAN
+                Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
+                        UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
+                        NAME_PROPERTY, ActionParser.PropertyType.STRING,
+                        PRIORITY_PROPERTY, ActionParser.PropertyType.INTEGER,
+                        DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN
                 ),
-                Map.of("creation_time", "creationTime", "update_time", "updateTime")
+                Map.of(CREATION_TIME_PROPERTY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY)
         );
     }
 
     @Override
     public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException {
         if (limit == null) {
-            limit = 10;
-        } else if (limit > 100) {
-            limit = 10;
+            limit = DEFAULT_LIMIT;
+        } else if (limit > MAX_LIMIT) {
+            limit = DEFAULT_LIMIT;
         }
-        // TODO(Шайдуко): для 10 и 100 обозначенных вот так есть термин - магические константы.
-        //  их нужно вынести в из метода сделать static final и дать имя в формате UNDER_SCORE
 
         if (offset == null) {
             offset = 0;
         }
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                "update_time", "updateTime", "creation_time", "creationTime", "name", "name"
+                CREATION_TIME_PROPERTY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY, NAME_QUERY, NAME_PROPERTY
         ));
-        // TODO(Шайдуко) со строками update_date, creation_date и т.д. кторые в коде используются более одного раза
-        //  следует поступить так же как как и с магическими константами - вынести их в нормальные константы
+
 
         if (orders == null) {
-            orders = List.of(Sort.Order.desc("updateTime"));
+            orders = List.of(Sort.Order.desc(UPDATE_TIME_PROPERTY));
         }
 
         List<TaskListEntity> listOfLists = taskListRepository.findAll(
@@ -144,8 +153,8 @@ public class TaskListServiceImpl implements TaskListService {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                "update_time", "updateTime", "creation_time", "creationTime", "name", "name",
-                "done", "done", "priority", "priority"
+                UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY, CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, NAME_QUERY, NAME_PROPERTY,
+                DONE_PROPERTY, DONE_QUERY, PRIORITY_QUERY, PRIORITY_PROPERTY
         ));
         if (orders == null) {
             orders = List.of(Sort.Order.desc("updateTime"));
@@ -160,12 +169,12 @@ public class TaskListServiceImpl implements TaskListService {
         long totalTasksCount = taskRepository.countAllByTaskList_Id(listId);
 
         if (limit == null) {
-            limit = 10;
-        } else if (limit > 100) {
-            limit = 10;
+            limit = DEFAULT_LIMIT;
+        } else if (limit > MAX_LIMIT) {
+            limit = DEFAULT_LIMIT;
         }
         if (offset == null) {
-            offset = 0;
+            offset = DEFAULT_OFFSET;
         }
 
         List<TaskEntity> tasksEntities = taskRepository.findAll(
@@ -242,7 +251,7 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setUpdateTime(entity.getUpdateTime());
 
         boolean closed = true;
-        for(TaskEntity task: entity.getTasks()) {
+        for (TaskEntity task : entity.getTasks()) {
             if (!task.isDone()) {
                 closed = false;
                 break;
