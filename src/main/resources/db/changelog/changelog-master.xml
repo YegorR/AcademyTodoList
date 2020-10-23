@@ -5,4 +5,5 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <include file="20201011180000_main_structures.xml" relativeToChangelogFile="true"/>
     <include file="20201021180000_ids_from_serial_to_uuid.xml" relativeToChangelogFile="true"/>
+    <include file="20201023110000_from_date_to_timestamp.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

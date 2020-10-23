@@ -3,7 +3,7 @@ package ru.yegorr.todolist.service.filtering;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -65,8 +65,8 @@ public class FilterSpecification<T> implements Specification<T> {
                     case NOT_EQUAL -> criteriaBuilder.notEqual(root.get(action.getProperty()), action.getValue());
                     case MORE, MORE_OR_EQUAL, LESS, LESS_OR_EQUAL -> {
                         Object value = action.getValue();
-                        if (value instanceof LocalDate) {
-                            yield moreOrLessPredicate(root, criteriaBuilder, (LocalDate)value);
+                        if (value instanceof LocalDateTime) {
+                            yield moreOrLessPredicate(root, criteriaBuilder, (LocalDateTime)value);
                         } else if (value instanceof Integer) {
                             yield moreOrLessPredicate(root, criteriaBuilder, (Integer)value);
                         } else if (value instanceof Boolean) {

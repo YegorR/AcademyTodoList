@@ -3,7 +3,7 @@ package ru.yegorr.todolist.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -17,13 +17,11 @@ public class TaskListEntity {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "creation_date")
-    private LocalDate creationDate;
-    // TODO(Шайдуко): я бы исполозовал Date, чтоб было время. т.к. просто дата слишком больой промежуток
+    @Column(name = "creation_time")
+    private LocalDateTime creationTime;
 
-    @Column(name = "update_date")
-    private LocalDate updateDate;
-    // TODO(Шайдуко): тоже что и выше
+    @Column(name = "update_time")
+    private LocalDateTime updateTime;
 
     @Column(name = "name")
     private String name;

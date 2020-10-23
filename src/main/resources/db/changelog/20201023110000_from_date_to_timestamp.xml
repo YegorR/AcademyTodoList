@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="20201023110000_5" author="YegorR">
+        <modifyDataType tableName="task" columnName="update_date" newDataType="datetime"/>
+        <modifyDataType tableName="task" columnName="creation_date" newDataType="datetime"/>
+        <modifyDataType tableName="list" columnName="update_date" newDataType="datetime"/>
+        <modifyDataType tableName="list" columnName="creation_date" newDataType="datetime"/>
+
+        <renameColumn tableName="task" oldColumnName="update_date" newColumnName="update_time"/>
+        <renameColumn tableName="task" oldColumnName="creation_date" newColumnName="creation_time"/>
+        <renameColumn tableName="list" oldColumnName="update_date" newColumnName="update_time"/>
+        <renameColumn tableName="list" oldColumnName="creation_date" newColumnName="creation_time"/>
+    </changeSet>
+</databaseChangeLog>

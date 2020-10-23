@@ -14,7 +14,7 @@ import static ru.yegorr.todolist.service.filtering.Action.ActionType.*;
 public class ActionParser {
 
     public enum PropertyType {
-        STRING, INTEGER, DATE, BOOLEAN
+        STRING, INTEGER, TIME, BOOLEAN
     }
 
     private final Map<String, PropertyType> propType;
@@ -118,9 +118,9 @@ public class ActionParser {
             case INTEGER -> {
                 return scanner.nextInt();
             }
-            case DATE -> {
+            case TIME -> {
                 String dateString = scanner.next();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
                 return LocalDate.parse(dateString, formatter);
             }
             case BOOLEAN -> {

@@ -9,7 +9,7 @@ import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.NotFoundException;
 import ru.yegorr.todolist.repository.*;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -53,9 +53,9 @@ public class TaskServiceImpl implements TaskService {
         //  хотя оно конечно работает и так
         task.setTaskList(taskListEntity);
 
-        LocalDate date = LocalDate.now();
-        task.setCreationDate(date);
-        task.setUpdateDate(date);
+        LocalDateTime time = LocalDateTime.now();
+        task.setCreationTime(time);
+        task.setUpdateTime(time);
         task.setDone(false);
 
         task = taskRepository.save(task);
@@ -76,6 +76,7 @@ public class TaskServiceImpl implements TaskService {
         task.setName(changeTaskRequest.getName());
         task.setDescription(changeTaskRequest.getDescription());
         task.setDone(changeTaskRequest.isDone());
+        task.setUpdateTime(LocalDateTime.now());
 
         UUID oldListId = task.getTaskList().getId();
         if (!oldListId.equals(changeTaskRequest.getListId())) {
@@ -104,8 +105,8 @@ public class TaskServiceImpl implements TaskService {
         taskResponse.setId(entity.getId());
         taskResponse.setName(entity.getName());
         taskResponse.setDescription(entity.getDescription());
-        taskResponse.setCreationDate(entity.getCreationDate());
-        taskResponse.setUpdateDate(entity.getUpdateDate());
+        taskResponse.setCreationTime(entity.getCreationTime());
+        taskResponse.setUpdateTime(entity.getUpdateTime());
         taskResponse.setPriority(entity.getPriority());
         taskResponse.setDone(entity.isDone());
         taskResponse.setListId(entity.getTaskList().getId());

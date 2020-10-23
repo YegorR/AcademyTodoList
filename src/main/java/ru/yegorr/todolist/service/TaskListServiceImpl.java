@@ -14,7 +14,7 @@ import ru.yegorr.todolist.service.filtering.*;
 import ru.yegorr.todolist.service.paging.OffsetLimitRequest;
 import ru.yegorr.todolist.service.sorting.ListsSorter;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,21 +45,21 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskRepository = taskRepository;
 
         listsActionParser = new ActionParser(
-                Map.of("creationDate", ActionParser.PropertyType.DATE,
-                        "updateDate", ActionParser.PropertyType.DATE,
+                Map.of("creationTime", ActionParser.PropertyType.TIME,
+                        "updateTime", ActionParser.PropertyType.TIME,
                         "name", ActionParser.PropertyType.STRING
                 ),
-                Map.of("creation_date", "creationDate", "update_date", "updateDate")
+                Map.of("creation_time", "creationTime", "update_time", "updateTime")
         );
 
         tasksActionParser = new ActionParser(
-                Map.of("creationDate", ActionParser.PropertyType.DATE,
-                        "updateDate", ActionParser.PropertyType.DATE,
+                Map.of("creationTime", ActionParser.PropertyType.TIME,
+                        "updateTime", ActionParser.PropertyType.TIME,
                         "name", ActionParser.PropertyType.STRING,
                         "priority", ActionParser.PropertyType.INTEGER,
                         "done", ActionParser.PropertyType.BOOLEAN
                 ),
-                Map.of("creation_date", "creationDate", "update_date", "updateDate")
+                Map.of("creation_time", "creationTime", "update_time", "updateTime")
         );
     }
 
@@ -78,13 +78,13 @@ public class TaskListServiceImpl implements TaskListService {
         }
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                "update_date", "updateDate", "creation_date", "creationDate", "name", "name"
+                "update_time", "updateTime", "creation_time", "creationTime", "name", "name"
         ));
         // TODO(Шайдуко) со строками update_date, creation_date и т.д. кторые в коде используются более одного раза
         //  следует поступить так же как как и с магическими константами - вынести их в нормальные константы
 
         if (orders == null) {
-            orders = List.of(Sort.Order.desc("updateDate"));
+            orders = List.of(Sort.Order.desc("updateTime"));
         }
 
         List<TaskListEntity> listOfLists = taskListRepository.findAll(
@@ -144,7 +144,7 @@ public class TaskListServiceImpl implements TaskListService {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
 
         List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                "update_date", "updateDate", "creation_date", "creationDate", "name", "name",
+                "update_time", "updateTime", "creation_time", "creationTime", "name", "name",
                 "done", "done", "priority", "priority"
         ));
         if (orders == null) {
@@ -154,8 +154,8 @@ public class TaskListServiceImpl implements TaskListService {
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
         fullTaskListResponse.setId(taskList.getId());
         fullTaskListResponse.setName(taskList.getName());
-        fullTaskListResponse.setCreationDate(taskList.getCreationDate());
-        fullTaskListResponse.setUpdateDate(taskList.getUpdateDate());
+        fullTaskListResponse.setCreationTime(taskList.getCreationTime());
+        fullTaskListResponse.setUpdateTime(taskList.getUpdateTime());
 
         long totalTasksCount = taskRepository.countAllByTaskList_Id(listId);
 
@@ -185,8 +185,8 @@ public class TaskListServiceImpl implements TaskListService {
             TaskResponse taskResponse = new TaskResponse();
             taskResponse.setId(task.getId());
             taskResponse.setListId(taskList.getId());
-            taskResponse.setCreationDate(task.getCreationDate());
-            taskResponse.setUpdateDate(task.getUpdateDate());
+            taskResponse.setCreationTime(task.getCreationTime());
+            taskResponse.setUpdateTime(task.getUpdateTime());
             taskResponse.setDescription(task.getDescription());
             taskResponse.setDone(task.isDone());
             taskResponse.setPriority(task.getPriority());
@@ -204,10 +204,10 @@ public class TaskListServiceImpl implements TaskListService {
     public TaskListResponse createList(ListRequest listRequest) {
         TaskListEntity taskList = new TaskListEntity();
 
-        LocalDate date = LocalDate.now();
+        LocalDateTime time = LocalDateTime.now();
         taskList.setName(listRequest.getName());
-        taskList.setCreationDate(date);
-        taskList.setUpdateDate(date);
+        taskList.setCreationTime(time);
+        taskList.setUpdateTime(time);
         taskList.setId(UUID.randomUUID());
         taskListRepository.save(taskList);
 
@@ -218,7 +218,7 @@ public class TaskListServiceImpl implements TaskListService {
     public TaskListResponse changeList(ListRequest listRequest, UUID listId) throws NotFoundException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         taskList.setName(listRequest.getName());
-        taskList.setUpdateDate(LocalDate.now());
+        taskList.setUpdateTime(LocalDateTime.now());
         return generateTaskListResponse(taskList);
     }
 
@@ -235,8 +235,8 @@ public class TaskListServiceImpl implements TaskListService {
         TaskListResponse taskListResponse = new TaskListResponse();
         taskListResponse.setId(entity.getId());
         taskListResponse.setName(entity.getName());
-        taskListResponse.setCreationDate(entity.getCreationDate());
-        taskListResponse.setUpdateDate(entity.getUpdateDate());
+        taskListResponse.setCreationTime(entity.getCreationTime());
+        taskListResponse.setUpdateTime(entity.getUpdateTime());
         return taskListResponse;
     }
 
