@@ -5,18 +5,10 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
 <!--
-        TODO(Шайдуко)
-        идентификатор changeSet тоже лучше сделать по типу имени файла
-        YYYYMMDDHHMMSS_цифра
-        так нужно чтоб понять, когда какая миграция писалась, птому что бывают случаи, когда не все changeSet-ы пишутся
-        в один день
--->
-
-<!--
         TODO(Шайдуко): вместо просто даты лучше использовать дату со временем - просто дата слишком большой промежуток
 -->
 
-    <changeSet author="YegorR" id="1">
+    <changeSet author="YegorR" id="20201011180000_1">
         <createTable tableName="list">
             <column autoIncrement="true" name="id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="list_pkey"/>
@@ -32,7 +24,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="YegorR" id="2">
+    <changeSet author="YegorR" id="20201011180000_2">
         <createTable tableName="task">
             <column autoIncrement="true" name="id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="task_pkey"/>
@@ -58,7 +50,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="3" author="YegorR">
+    <changeSet author="YegorR" id="20201011180000_3">
         <!-- liquibase ignores check constraint by tag, so there is SQL -->
         <sql>
             ALTER TABLE task ADD CONSTRAINT priority_check CHECK (priority &gt;= 0 AND priority &lt;= 4)
