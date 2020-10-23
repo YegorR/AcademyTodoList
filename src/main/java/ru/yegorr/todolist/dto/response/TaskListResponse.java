@@ -24,7 +24,6 @@ public class TaskListResponse {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updateTime;
 
-    // TODO(Шайдуко): тут я бы ещё ввел одно поле, которое бы показыывало стату списка, чтоб
-    //  фронт прямо в списке мог показать список закрыт или нет
+    private boolean closed;
 
 }

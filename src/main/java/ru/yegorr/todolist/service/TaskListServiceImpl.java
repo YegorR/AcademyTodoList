@@ -148,7 +148,7 @@ public class TaskListServiceImpl implements TaskListService {
                 "done", "done", "priority", "priority"
         ));
         if (orders == null) {
-            orders = List.of(Sort.Order.desc("updateDate"));
+            orders = List.of(Sort.Order.desc("updateTime"));
         }
 
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
@@ -176,11 +176,13 @@ public class TaskListServiceImpl implements TaskListService {
         List<TaskResponse> tasks = new ArrayList<>();
         int openedTasksCount = 0;
         int closedTasksCount = 0;
+        boolean closed = true;
         for (TaskEntity task : tasksEntities) {
             if (task.isDone()) {
                 closedTasksCount++;
             } else {
                 openedTasksCount++;
+                closed = false;
             }
             TaskResponse taskResponse = new TaskResponse();
             taskResponse.setId(task.getId());
@@ -197,6 +199,7 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setClosedTasksCount(closedTasksCount);
         fullTaskListResponse.setTasks(tasks);
         fullTaskListResponse.setTotalTasksCount(totalTasksCount);
+        fullTaskListResponse.setClosed(closed);
         return fullTaskListResponse;
     }
 
@@ -237,6 +240,15 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setName(entity.getName());
         taskListResponse.setCreationTime(entity.getCreationTime());
         taskListResponse.setUpdateTime(entity.getUpdateTime());
+
+        boolean closed = true;
+        for(TaskEntity task: entity.getTasks()) {
+            if (!task.isDone()) {
+                closed = false;
+                break;
+            }
+        }
+        taskListResponse.setClosed(closed);
         return taskListResponse;
     }
 

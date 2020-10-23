@@ -31,5 +31,7 @@ public class FullTaskListResponse {
 
     private long totalTasksCount;
 
+    private boolean closed;
+
     private List<TaskResponse> tasks;
 }
