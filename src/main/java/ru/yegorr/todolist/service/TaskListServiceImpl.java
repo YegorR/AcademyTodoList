@@ -31,7 +31,7 @@ public class TaskListServiceImpl implements TaskListService {
 
     private final TaskRepository taskRepository;
 
-    private ListsSorter listsSorter;
+    private final ListsSorter listsSorter, tasksSorter;
 
     private final ActionParser listsActionParser, tasksActionParser;
 
@@ -42,8 +42,7 @@ public class TaskListServiceImpl implements TaskListService {
     private static final String CREATION_TIME_PROPERTY = "creationTime", UPDATE_TIME_PROPERTY = "updateTime", NAME_PROPERTY = "name",
             PRIORITY_PROPERTY = "priority", DONE_PROPERTY = "done";
 
-    private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time", NAME_QUERY = "name", PRIORITY_QUERY = "priority",
-            DONE_QUERY = "done";
+    private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time";
 
     /**
      * Constructor
@@ -56,12 +55,14 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskListRepository = taskListRepository;
         this.taskRepository = taskRepository;
 
+        Map<String, String> propertyMapping = Map.of(CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY);
+
         listsActionParser = new ActionParser(
                 Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         NAME_PROPERTY, ActionParser.PropertyType.STRING
                 ),
-                Map.of(CREATION_TIME_PROPERTY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY)
+                propertyMapping
         );
 
         tasksActionParser = new ActionParser(
@@ -71,8 +72,11 @@ public class TaskListServiceImpl implements TaskListService {
                         PRIORITY_PROPERTY, ActionParser.PropertyType.INTEGER,
                         DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN
                 ),
-                Map.of(CREATION_TIME_PROPERTY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY)
+                propertyMapping
         );
+
+        listsSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY), propertyMapping);
+        tasksSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY, DONE_PROPERTY), propertyMapping);
     }
 
     @Override
@@ -87,11 +91,7 @@ public class TaskListServiceImpl implements TaskListService {
             offset = 0;
         }
 
-        List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                CREATION_TIME_PROPERTY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY, NAME_QUERY, NAME_PROPERTY
-        ));
-
-
+        List<Sort.Order> orders = listsSorter.handleSortQuery(sort);
         if (orders == null) {
             orders = List.of(Sort.Order.desc(UPDATE_TIME_PROPERTY));
         }
@@ -152,12 +152,9 @@ public class TaskListServiceImpl implements TaskListService {
             throws NotFoundException, ValidationFailsException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
 
-        List<Sort.Order> orders = listsSorter.handleSortQuery(sort, Map.of(
-                UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY, CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, NAME_QUERY, NAME_PROPERTY,
-                DONE_PROPERTY, DONE_QUERY, PRIORITY_QUERY, PRIORITY_PROPERTY
-        ));
+        List<Sort.Order> orders = tasksSorter.handleSortQuery(sort);
         if (orders == null) {
-            orders = List.of(Sort.Order.desc("updateTime"));
+            orders = List.of(Sort.Order.desc(UPDATE_TIME_PROPERTY));
         }
 
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
@@ -259,15 +256,5 @@ public class TaskListServiceImpl implements TaskListService {
         }
         taskListResponse.setClosed(closed);
         return taskListResponse;
-    }
-
-    /**
-     * Set listsSorter
-     *
-     * @param listsSorter listSorter
-     */
-    @Autowired
-    public void setListsSorter(ListsSorter listsSorter) {
-        this.listsSorter = listsSorter;
     }
 }

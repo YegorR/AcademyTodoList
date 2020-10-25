@@ -1,6 +1,5 @@
 package ru.yegorr.todolist.service.sorting;
 
-import org.springframework.stereotype.Component;
 import ru.yegorr.todolist.exception.ValidationFailsException;
 
 import java.util.*;
@@ -9,29 +8,45 @@ import java.util.regex.*;
 import static org.springframework.data.domain.Sort.Order;
 
 /**
- * Do Sort.Orders with sorting query
+ * Делает Sort.Orders с помощью строки-запроса сортировки
  */
-@Component
 public class ListsSorter {
 
+    private final Set<String> props;
+
+    private final Map<String, String> queryPropsMapping;
+
     /**
-     * Do Sort.Orders for sortQuery
+     * Конструктор
      *
-     * @param sortQuery sort Query
-     * @param props map, where key - property in query, value - property in entity
-     * @return List Sort.Order; null - if there is no sortQuery
-     * @throws ValidationFailsException if validation fails
+     * @param props свойства
+     * @param queryPropsMapping маппинг "свойства в строке - свойства в entity"; если совпадают, то добавлять не обязательно
      */
-    public List<Order> handleSortQuery(String sortQuery, Map<String, String> props) throws ValidationFailsException {
+    public ListsSorter(Set<String> props, Map<String, String> queryPropsMapping) {
+        this.props = props;
+        this.queryPropsMapping = queryPropsMapping;
+    }
+
+    /**
+     * Составляет Sort.Orders с помощью строки сортировки
+     *
+     * @param sortQuery строка сортировки
+     * @return Sort.Orders
+     * @throws ValidationFailsException строка сортировка составлена неверно
+     */
+    public List<Order> handleSortQuery(String sortQuery) throws ValidationFailsException {
         if (sortQuery == null || sortQuery.trim().isEmpty()) {
             return null;
         }
 
         sortQuery = sortQuery.trim().toLowerCase().replaceAll("\\s+", "");
+        for (String prop: queryPropsMapping.keySet()) {
+            sortQuery = sortQuery.replaceAll(prop, queryPropsMapping.get(prop));
+        }
         StringBuilder queryBuilder = new StringBuilder(sortQuery);
         Set<String> usedProperties = new HashSet<>();
         List<Order> orderList = new ArrayList<>();
-        final Pattern propertyGroupPattern = getPropertyRegexpGroup(props.keySet());
+        final Pattern propertyGroupPattern = getPropertyRegexpGroup(props);
         final Pattern ascDescGroupPattern = Pattern.compile(":(asc|desc)");
 
         while (true) {
@@ -49,13 +64,13 @@ public class ListsSorter {
             matcher = ascDescGroupPattern.matcher(queryBuilder.toString());
             if (matcher.find()) {
                 if (":asc".equals(matcher.group(0))) {
-                    orderList.add(Order.asc(props.get(property)));
+                    orderList.add(Order.asc(property));
                 } else {
-                    orderList.add(Order.desc(props.get(property)));
+                    orderList.add(Order.desc(property));
                 }
                 queryBuilder.delete(0, matcher.end(0));
             } else {
-                orderList.add(Order.asc(props.get(property)));
+                orderList.add(Order.asc(property));
             }
 
             if (queryBuilder.toString().isEmpty()) {
