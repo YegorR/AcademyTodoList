@@ -4,5 +4,5 @@ package ru.yegorr.todolist.entity;
  * Приоритет задания
  */
 public enum Priority {
-    VERY_HIGH, HIGH, MEDIUM, LOW, VERY_LOW
+    VERY_LOW, LOW, MEDIUM, HIGH, VERY_HIGH
 }
