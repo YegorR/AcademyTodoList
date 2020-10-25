@@ -3,6 +3,7 @@ package ru.yegorr.todolist.dto.response;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import ru.yegorr.todolist.entity.Priority;
 import ru.yegorr.todolist.serializer.LocalDateTimeSerializer;
 
 import java.time.*;
@@ -29,7 +30,7 @@ public class TaskResponse {
 
     private String description;
 
-    private byte priority;
+    private Priority priority;
 
     private boolean done;
 }

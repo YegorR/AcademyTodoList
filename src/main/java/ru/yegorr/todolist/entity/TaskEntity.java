@@ -33,7 +33,7 @@ public class TaskEntity {
     private boolean done;
 
     @Column(name = "priority")
-    private byte priority;
+    private Priority priority;
     // TODO(Шайдуко): приоритет лучше сделать не числовым, а перечислением
     // соответственно это повлечет правку в DTO
 

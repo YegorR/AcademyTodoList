@@ -3,6 +3,7 @@ package ru.yegorr.todolist.dto.request;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import ru.yegorr.todolist.entity.Priority;
 
 import javax.validation.constraints.*;
 import java.util.UUID;
@@ -24,9 +25,8 @@ public class ChangeTaskRequest {
     @Length(max = 4096, message="{description.length}")
     private String description;
 
-    @Min(value = 0, message = "{priority.min}")
-    @Max(value = 4, message = "{priority.max}")
-    private byte priority;
+    @NotNull(message = "{priority.notnull}")
+    private Priority priority;
 
     private boolean done;
 }
