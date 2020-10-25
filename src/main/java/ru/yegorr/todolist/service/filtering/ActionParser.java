@@ -9,7 +9,7 @@ import java.util.*;
 import static ru.yegorr.todolist.service.filtering.Action.ActionType.*;
 
 /**
- * Reads condition from filter query
+ * Отвечает за парсинг строки-запроса фильтрации
  */
 public class ActionParser {
 
@@ -22,10 +22,11 @@ public class ActionParser {
     private final Map<String, String> properties;
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param propType   mapping property in entity - type
-     * @param properties mapping property in query - property in entity
+     * @param propType   маппинг "свойство - тип"
+     * @param properties mapping property in query - property in entity маппинг "свойство в запросе - свойство в entity";
+     *                   если совпадают, то можно свойство не добавлять
      */
     public ActionParser(Map<String, PropertyType> propType, Map<String, String> properties) {
         this.propType = propType;
@@ -33,11 +34,11 @@ public class ActionParser {
     }
 
     /**
-     * Parses filter query and get action
+     * Парсит строку фильтра
      *
-     * @param filter filter query
-     * @return Action
-     * @throws ValidationFailsException if query is wrong
+     * @param filter строка фильтра
+     * @return Action; null, если строка фильтрации пустая
+     * @throws ValidationFailsException если строка фильтра составлена ошибочно
      */
     public Action parse(String filter) throws ValidationFailsException {
         if (filter == null || filter.trim().isEmpty()) {
@@ -51,7 +52,7 @@ public class ActionParser {
 
         Scanner scanner = new Scanner(filter);
         try {
-            Action action =  readAction(scanner);
+            Action action = readAction(scanner);
             if (scanner.hasNext()) {
                 throw new ValidationFailsException("Wrong filter");
             }
