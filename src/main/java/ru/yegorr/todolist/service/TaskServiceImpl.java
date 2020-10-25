@@ -77,6 +77,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(changeTaskRequest.getDescription());
         task.setDone(changeTaskRequest.isDone());
         task.setUpdateTime(LocalDateTime.now());
+        task.setPriority(changeTaskRequest.getPriority());
 
         UUID oldListId = task.getTaskList().getId();
         if (!oldListId.equals(changeTaskRequest.getListId())) {

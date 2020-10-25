@@ -33,9 +33,8 @@ public class TaskEntity {
     private boolean done;
 
     @Column(name = "priority")
+    @Enumerated(EnumType.ORDINAL)
     private Priority priority;
-    // TODO(Шайдуко): приоритет лучше сделать не числовым, а перечислением
-    // соответственно это повлечет правку в DTO
 
     @ManyToOne
     @JoinColumn(name = "task_list_id")
