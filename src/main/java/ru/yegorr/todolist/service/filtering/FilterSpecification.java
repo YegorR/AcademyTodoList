@@ -7,9 +7,9 @@ import java.time.*;
 import java.util.*;
 
 /**
- * Specification for filtering
+ * Specification для фильтрации
  *
- * @param <T> entity type
+ * @param <T> тип сущности
  */
 public class FilterSpecification<T> implements Specification<T> {
 
@@ -20,20 +20,20 @@ public class FilterSpecification<T> implements Specification<T> {
     private final String foreignParent;
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param action action
+     * @param action действие фильтрации
      */
     public FilterSpecification(Action action) {
         this(action, null, null);
     }
 
     /**
-     * Constructor
+     * Конструктор, когда нужно искать также по внешнему ключу
      *
-     * @param action action
-     * @param foreignKey key value of parent
-     * @param foreignParent property of parent
+     * @param action действие фильтрации
+     * @param foreignKey внешний ключ
+     * @param foreignParent свойство внешнего ключа
      */
     public FilterSpecification(Action action, UUID foreignKey, String foreignParent) {
         this.action = action;

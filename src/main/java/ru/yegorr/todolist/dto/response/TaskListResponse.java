@@ -9,10 +9,10 @@ import java.time.*;
 import java.util.UUID;
 
 /**
- * Task list response for create or change task list
+ * Ответ на запрос о создании и изменении списка
  */
 @Data
-@ApiModel(value = "BriefList", description = "Brief list information")
+@ApiModel(value = "Краткий список", description = "Краткая информация о списках")
 public class TaskListResponse {
     private UUID id;
 

@@ -10,10 +10,10 @@ import java.time.*;
 import java.util.UUID;
 
 /**
- * Response for task requests
+ * Ответ на запросы о заданиях
  */
 @Data
-@ApiModel(value = "Task", description = "Task information")
+@ApiModel(value = "Задание", description = "Информация о задании")
 public class TaskResponse {
 
     private UUID id;

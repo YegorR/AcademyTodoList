@@ -6,10 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Response for get lists request
+ * Ответ на запрос о получении списков
  */
 @Data
-@ApiModel(value = "Lists", description = "Lists information")
+@ApiModel(value = "Списки", description = "Информация о списках")
 public class ListsResponse {
     private int openedListsCount;
 

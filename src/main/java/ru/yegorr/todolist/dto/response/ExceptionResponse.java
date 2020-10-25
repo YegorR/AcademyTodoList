@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 /**
- * Response for exceptions
+ * Ответ на ошибки-исключения
  */
-@ApiModel(value = "Exception", description = "Exception description")
+@ApiModel(value = "Исключение", description = "Описание исключения")
 @Data
 public class ExceptionResponse {
     private int httpCode;

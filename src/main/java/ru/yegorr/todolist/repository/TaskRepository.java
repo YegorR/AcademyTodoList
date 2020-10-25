@@ -7,7 +7,7 @@ import ru.yegorr.todolist.entity.TaskEntity;
 import java.util.UUID;
 
 /**
- * Repository for tasks
+ * Репозиторий для заданий
  */
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, UUID>, JpaSpecificationExecutor<TaskEntity> {

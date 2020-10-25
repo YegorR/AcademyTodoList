@@ -5,8 +5,8 @@ import lombok.Value;
 import java.util.List;
 
 /**
- * Action for filtering.
- * If ActionType is AND, OR, NOT, then actions must not be null or empty, else property and value must not be null or empty
+ * Действие для фильтрации
+ * Если ActionType - это AND, OR, NOT, то actions должен быть null или пустым, иначе property и value должны быть не пустыми и не null
  */
 @Value
 public class Action {
@@ -16,10 +16,10 @@ public class Action {
     }
 
     /**
-     * Constructor for AND, OR, NOT operators
+     * Конструктор для операторов AND, OR, NOT
      *
-     * @param actionType actionType
-     * @param actions actions
+     * @param actionType тип действия
+     * @param actions вложенные действия
      */
     public Action(ActionType actionType, List<Action> actions) {
         this.actionType = actionType;
@@ -29,11 +29,11 @@ public class Action {
     }
 
     /**
-     * Constructor for = and etc. operators
+     * Конструктор для "простых" операторов
      *
-     * @param actionType actionType
-     * @param property name of property in entity
-     * @param value value
+     * @param actionType тип действия
+     * @param property название свойства в сущности
+     * @param value значение
      */
     public Action(ActionType actionType, String property, Object value) {
         this.actionType = actionType;

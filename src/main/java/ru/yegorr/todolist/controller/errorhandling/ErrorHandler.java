@@ -1,6 +1,5 @@
 package ru.yegorr.todolist.controller.errorhandling;
 
-import io.swagger.models.Response;
 import org.springframework.http.*;
 import org.springframework.http.converter.*;
 import org.springframework.validation.*;
@@ -15,7 +14,7 @@ import ru.yegorr.todolist.exception.*;
 import javax.validation.*;
 
 /**
- * Handler of application exceptions
+ * Обработчик исключений приложения
  */
 @ControllerAdvice
 public class ErrorHandler {

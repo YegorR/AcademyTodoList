@@ -13,7 +13,7 @@ import java.time.*;
 import java.util.*;
 
 /**
- * Implementation of TaskService
+ * Реализация TaskService
  */
 @Service
 @Transactional
@@ -24,10 +24,10 @@ public class TaskServiceImpl implements TaskService {
     private final TaskListRepository taskListRepository;
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param taskRepository     taskRepository
-     * @param taskListRepository taskListRepository
+     * @param taskRepository     репозиторий заданий
+     * @param taskListRepository репозиторий списков
      */
     @Autowired
     public TaskServiceImpl(TaskRepository taskRepository, TaskListRepository taskListRepository) {

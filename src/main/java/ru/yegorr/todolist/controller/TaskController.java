@@ -13,18 +13,18 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 /**
- * Controller for tasks requests
+ * Контроллер для запросов заданий
  */
 @RestController
-@Api(tags = "Tasks")
+@Api(tags = "Задания")
 public class TaskController {
 
     private final TaskService taskService;
 
     /**
-     * Controller
+     * Конструктор
      *
-     * @param taskService taskService
+     * @param taskService сервис заданий
      */
     @Autowired
     public TaskController(TaskService taskService) {
@@ -32,70 +32,71 @@ public class TaskController {
     }
 
     /**
-     * Creates new task
+     * Создаёт новое задание
      *
-     * @param createTaskRequest new task data
+     * @param createTaskRequest данные для нового задания
      * @return TaskResponse
      */
     @PostMapping("/task")
-    @ApiOperation("Create new task")
+    @ApiOperation("Создать новоё задание")
     @ApiResponses({
-            @ApiResponse(code = 201, message = "The task is created"),
-            @ApiResponse(code = 404, message = "The list is not found")
+            @ApiResponse(code = 201, message = "Задание создано"),
+            @ApiResponse(code = 404, message = "Список не найден")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponse createTask(@RequestBody @ApiParam("New task data") @Valid CreateTaskRequest createTaskRequest) throws NotFoundException {
+    public TaskResponse createTask(@RequestBody @ApiParam("Данные для нового задания") @Valid CreateTaskRequest createTaskRequest) throws NotFoundException {
         return taskService.createTask(createTaskRequest);
     }
 
     /**
-     * Changes the task
+     * Изменяет задание
      *
-     * @param changeTaskRequest task data dor changing
-     * @param taskId            task id
+     * @param changeTaskRequest данные для изменения задания
+     * @param taskId            id задания
      * @return TaskResponse
      */
     @PutMapping("/task/{id}")
-    @ApiOperation("Change the task")
+    @ApiOperation("Изменить задание")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "The task is changed"),
-            @ApiResponse(code = 404, message = "The task or the list is not found")
+            @ApiResponse(code = 200, message = "Задание изменено"),
+            @ApiResponse(code = 404, message = "Задание или список не найдены")
     })
     public TaskResponse changeTask(
-            @RequestBody @ApiParam("Task data for changing") @Valid ChangeTaskRequest changeTaskRequest, @PathVariable("id") @ApiParam("Task id") UUID taskId
+            @RequestBody @ApiParam("Данные для изменения задания") @Valid ChangeTaskRequest changeTaskRequest,
+            @PathVariable("id") @ApiParam("id задания") UUID taskId
     ) throws NotFoundException {
         return taskService.changeTask(changeTaskRequest, taskId);
     }
 
     /**
-     * Mark the task done
+     * Отмечает задание как выполненное
      *
-     * @param taskId task id
+     * @param taskId id задания
      */
     @PostMapping("/markDone/{id}")
-    @ApiOperation("Mark the task done")
+    @ApiOperation("Отметить задание выполненным")
     @ApiResponses({
-            @ApiResponse(code = 204, message = "The task is marked"),
-            @ApiResponse(code = 404, message = "The task is not found")
+            @ApiResponse(code = 204, message = "Задание отмечено выполненным"),
+            @ApiResponse(code = 404, message = "Задание не найдено")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markDone(@PathVariable("id") @ApiParam("Task id") UUID taskId) throws NotFoundException {
+    public void markDone(@PathVariable("id") @ApiParam("id задания") UUID taskId) throws NotFoundException {
         taskService.markDone(taskId);
     }
 
     /**
-     * Delete the task
+     * Удаляет задание
      *
-     * @param taskId task id
+     * @param taskId id задания
      */
     @DeleteMapping("/task/{id}")
-    @ApiOperation("Delete the task")
+    @ApiOperation("Удалить задание")
     @ApiResponses({
-            @ApiResponse(code = 204, message = "The task is removed"),
-            @ApiResponse(code = 404, message = "The task is not found")
+            @ApiResponse(code = 204, message = "Задание удалено"),
+            @ApiResponse(code = 404, message = "Задание не найдено")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable("id") @ApiParam("Task id") UUID taskId) throws NotFoundException {
+    public void deleteTask(@PathVariable("id") @ApiParam("id задания") UUID taskId) throws NotFoundException {
         taskService.deleteTask(taskId);
     }
 }

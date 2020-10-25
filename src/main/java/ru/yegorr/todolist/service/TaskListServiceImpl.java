@@ -18,10 +18,8 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO: сделать что-то с маппингом свойств из запроса и свойств в entity
-
 /**
- * Implementation of TaskListService
+ * Реализация TaskListService
  */
 @Service
 @Transactional
@@ -45,10 +43,10 @@ public class TaskListServiceImpl implements TaskListService {
     private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time";
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param taskListRepository taskListRepository
-     * @param taskRepository     taskRepository
+     * @param taskListRepository репозиторий списков
+     * @param taskRepository     репозиторий заданий
      */
     @Autowired
     public TaskListServiceImpl(TaskListRepository taskListRepository, TaskRepository taskRepository) {

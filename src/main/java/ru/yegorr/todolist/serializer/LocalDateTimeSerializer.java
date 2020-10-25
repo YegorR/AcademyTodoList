@@ -9,23 +9,23 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Serializer to serialize LocalDate to dd-MM-yyyy format
+ * Сериализатор для LocalDateTime -> дд-ММ-гггг
  */
 public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
 
     /**
-     * Constructor
+     * Конструктор
      */
     public LocalDateTimeSerializer() {
         this(null);
     }
 
     /**
-     * Constructor
+     * Конструктор
      *
-     * @param t class
+     * @param t Class
      */
     public LocalDateTimeSerializer(Class t) {
         super(t);

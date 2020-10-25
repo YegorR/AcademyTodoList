@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.function.Predicate;
 
 /**
- * Config for Swagger
+ * Конфигурация списка
  */
 @Configuration
 public class SpringFoxConfig {
@@ -30,7 +30,7 @@ public class SpringFoxConfig {
     }
 
     /**
-     * Configures Swagger
+     * Конфигирует Swagger
      *
      * @return Docket
      */

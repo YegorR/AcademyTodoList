@@ -7,7 +7,7 @@ import java.time.*;
 import java.util.*;
 
 /**
- * Task list entity
+ * Сущность списка заданий
  */
 @Data
 @Entity

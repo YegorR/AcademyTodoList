@@ -9,10 +9,10 @@ import javax.validation.constraints.*;
 import java.util.UUID;
 
 /**
- * Change task request
+ * Запрос на изменение задания
  */
 @Data
-@ApiModel(value = "ChangeTask", description = "Task data for changing")
+@ApiModel(value = "Изменения задания", description = "Данные для изменения задания")
 public class ChangeTaskRequest {
 
     @NotNull(message = "{id.notnull}")

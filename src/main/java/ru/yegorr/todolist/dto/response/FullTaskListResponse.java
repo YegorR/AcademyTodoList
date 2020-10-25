@@ -9,10 +9,10 @@ import java.time.*;
 import java.util.*;
 
 /**
- * Response for get list request
+ * Ответ на запрос получения списка
  */
 @Data
-@ApiModel(value = "List", description = "Full information about list and tasks in it")
+@ApiModel(value = "Список(ответ)", description = "Полная информация о списке и заданиях в нём")
 public class FullTaskListResponse {
 
     private UUID id;

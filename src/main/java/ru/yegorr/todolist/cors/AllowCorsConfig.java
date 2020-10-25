@@ -5,13 +5,13 @@ import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
 
 /**
- * Configuration for generating {@code AllowCorsFilter} as a bean and its deploying as a filter
+ * Конфигурация для генерирования AllowCorsFilter как bean и его деплоинга как фильтра
  */
 @Configuration
 public class AllowCorsConfig {
 
     /**
-     * Generate {@code AllowCorsFilter} as a bean and its deploying as a filter
+     * Генерирует AllowCorsFilter как бин и деплоит его как фильтр
      *
      * @return FilterRegistrationBean<AllowCorsFilter>
      */

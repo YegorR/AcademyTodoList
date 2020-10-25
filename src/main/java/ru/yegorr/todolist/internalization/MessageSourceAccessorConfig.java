@@ -7,13 +7,13 @@ import org.springframework.context.support.*;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Configuration of using messages in properties for validation
+ * Конфигарция для использования сообщений из .properties для сообщениях о валидации
  */
 @Configuration
 public class MessageSourceAccessorConfig {
 
     /**
-     * Creates MessageSource that uses properties
+     * Создаёт MessageSource который использует .properties
      *
      * @return messageSource
      */
@@ -28,7 +28,7 @@ public class MessageSourceAccessorConfig {
     }
 
     /**
-     * Creates LocalValidatorFactoryBean that uses messageSource
+     * Создаёт LocalValidatorFactoryBean, который использует messageSource
      * @param messageSource messageSource
      * @return LocalValidatorFactoryBean
      */

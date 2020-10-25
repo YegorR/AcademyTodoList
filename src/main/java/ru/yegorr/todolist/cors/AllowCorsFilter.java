@@ -7,7 +7,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 /**
- * Set CORS policy - allowed for everyone
+ * Настраивает CORS-политику - разрешает пользование всем
  */
 public class AllowCorsFilter extends OncePerRequestFilter {
 

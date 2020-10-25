@@ -3,7 +3,7 @@ package ru.yegorr.todolist.service.paging;
 import org.springframework.data.domain.*;
 
 /**
- * Provides pagination by offset and limit
+ * Нужен для пагинации по смещению и лимиту
  */
 public class OffsetLimitRequest implements Pageable {
     private final int offset;
@@ -13,11 +13,11 @@ public class OffsetLimitRequest implements Pageable {
     private final Sort sort;
 
     /**
-     * Constructor
+     * Конструктору
      *
-     * @param offset offset
-     * @param limit limit
-     * @param sort sorting
+     * @param offset смещение
+     * @param limit лимит
+     * @param sort сортировка
      */
     public OffsetLimitRequest(int offset, int limit, Sort sort) {
         if (offset < 0) {
@@ -33,16 +33,6 @@ public class OffsetLimitRequest implements Pageable {
         this.offset = offset;
         this.limit = limit;
         this.sort = sort;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param offset offset
-     * @param limit limit
-     */
-    public OffsetLimitRequest(int offset, int limit) {
-        this(offset, limit, Sort.unsorted());
     }
 
     @Override

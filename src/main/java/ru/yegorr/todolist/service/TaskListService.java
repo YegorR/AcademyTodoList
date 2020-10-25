@@ -7,56 +7,56 @@ import ru.yegorr.todolist.exception.*;
 import java.util.UUID;
 
 /**
- * Service for task lists
+ * Сервис для спискрв
  */
 public interface TaskListService {
 
     /**
-     * Gets task lists
+     * Получить списки
      *
-     * @param limit  max count of lists, if more 100 than 10
-     * @param sort   how lists must be sorted, nullable
-     * @param filter how lists must be filtered, nullable
-     * @param offset number of the first result, nullable
-     * @return all lists satisfying limit, offset, sort and filter
-     * @throws ValidationFailsException filter or sort wrong
+     * @param limit  максимальное количество списков; есть больше 100, то 10
+     * @param sort   как сортировать, nullable
+     * @param filter как фильтровать, nullable
+     * @param offset номер первого результата, nullable
+     * @return списки
+     * @throws ValidationFailsException фильтр или сортировка составлены неверно
      */
     ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException;
 
     /**
-     * Get list and its tasks
+     * Получить список и задания в нём
      *
-     * @param listId list id
-     * @param limit  max count of lists, if more 100 than 10
-     * @param sort   how lists must be sorted, nullable
-     * @param filter how lists must be filtered, nullable
-     * @param offset number of the first result, nullable
-     * @return list and its tasks satisfying limit, offset, sort and filter
-     * @throws NotFoundException no list with this id
-     * @throws ValidationFailsException filter or sort wrong
+     * @param listId id списка
+     * @param limit  максимальное количество списков; есть больше 100, то 10
+     * @param sort   как сортировать, nullable
+     * @param filter как фильтровать, nullable
+     * @param offset номер первого результата, nullable
+     * @return список и задания в неём
+     * @throws NotFoundException нет листа с таким id
+     * @throws ValidationFailsException фильтр или сортировка составлены неверно
      */
     FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset) throws NotFoundException, ValidationFailsException;
 
     /**
-     * Creates new list
+     * Создать новый список
      *
-     * @param listRequest new list data
-     * @return Created list data
+     * @param listRequest данные для нового списка
+     * @return TaskListResponse
      */
     TaskListResponse createList(ListRequest listRequest);
 
     /**
-     * Changes the list
+     * Изменить список
      *
-     * @param listRequest list data for changing
-     * @param listId      list id
-     * @return changed list data
+     * @param listRequest данные для изменения списка
+     * @param listId      id списка
+     * @return TaskListResponse
      */
     TaskListResponse changeList(ListRequest listRequest, UUID listId) throws NotFoundException;
 
     /**
-     * Deletes the list
-     * @param listId list id
+     * Удалить список
+     * @param listId id списка
      */
     void deleteList(UUID listId) throws NotFoundException;
 }

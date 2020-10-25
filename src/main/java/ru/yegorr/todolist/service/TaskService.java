@@ -7,37 +7,37 @@ import ru.yegorr.todolist.exception.NotFoundException;
 import java.util.UUID;
 
 /**
- * Service for tasks
+ * Сервис заданий
  */
 public interface TaskService {
 
     /**
-     * Creates new task
+     * Создать новое задание
      *
-     * @param createTaskRequest new task data
-     * @return created task data
+     * @param createTaskRequest данные для нового задания
+     * @return TaskResponse
      */
     TaskResponse createTask(CreateTaskRequest createTaskRequest) throws NotFoundException;
 
     /**
-     * Changes the tasks
+     * Изменить задание
      *
-     * @param changeTaskRequest the task data for changing
-     * @param taskId            task id
-     * @return changed task data
+     * @param changeTaskRequest данные для изменения задания
+     * @param taskId            id задания
+     * @return TaskResponse
      */
     TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId) throws NotFoundException;
 
     /**
-     * Deletes the task
+     * Удалить задание
      *
-     * @param taskId task id
+     * @param taskId id задания
      */
     void deleteTask(UUID taskId) throws NotFoundException;
 
     /**
-     * Marks the task as done
-     * @param taskId task id
+     * Отметить задание как выполненное
+     * @param taskId id задания
      */
     void markDone(UUID taskId) throws NotFoundException;
 }

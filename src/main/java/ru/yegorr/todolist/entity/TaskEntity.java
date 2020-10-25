@@ -7,7 +7,7 @@ import java.time.*;
 import java.util.UUID;
 
 /**
- * Task entity
+ * Сущность задания
  */
 @Data
 @Entity
