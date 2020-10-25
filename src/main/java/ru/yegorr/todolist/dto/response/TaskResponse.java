@@ -6,6 +6,7 @@ import lombok.Data;
 import ru.yegorr.todolist.entity.Priority;
 import ru.yegorr.todolist.serializer.LocalDateTimeSerializer;
 
+import java.io.Serializable;
 import java.time.*;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
  */
 @Data
 @ApiModel(value = "Задание", description = "Информация о задании")
-public class TaskResponse {
+public class TaskResponse implements Serializable {
 
     private UUID id;
 

@@ -3,6 +3,7 @@ package ru.yegorr.todolist.dto.response;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "Списки", description = "Информация о списках")
-public class ListsResponse {
+public class ListsResponse implements Serializable {
     private int openedListsCount;
 
     private int closedListCount;

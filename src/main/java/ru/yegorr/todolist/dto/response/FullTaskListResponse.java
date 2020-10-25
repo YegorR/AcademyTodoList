@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import ru.yegorr.todolist.serializer.LocalDateTimeSerializer;
 
+import java.io.Serializable;
 import java.time.*;
 import java.util.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
  */
 @Data
 @ApiModel(value = "Список(ответ)", description = "Полная информация о списке и заданиях в нём")
-public class FullTaskListResponse {
+public class FullTaskListResponse implements Serializable {
 
     private UUID id;
 

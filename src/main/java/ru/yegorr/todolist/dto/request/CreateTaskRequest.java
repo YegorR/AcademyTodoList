@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import ru.yegorr.todolist.entity.Priority;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -13,7 +14,7 @@ import java.util.UUID;
  */
 @Data
 @ApiModel(value = "Создание задания", description = "Данные для создания задания")
-public class CreateTaskRequest {
+public class CreateTaskRequest implements Serializable {
 
     @NotNull(message = "{id.notnull}")
     private UUID listId;

@@ -5,13 +5,14 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 /**
  * Запрос на изменение или создание списка
  */
 @Data
 @ApiModel(value = "Список", description = "Данные для изменения или создания списка")
-public class ListRequest {
+public class ListRequest implements Serializable {
 
     @NotBlank(message = "{name.notblank}")
     @Length(max = 4096, message = "{name.length}")
