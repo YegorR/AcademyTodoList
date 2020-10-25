@@ -51,7 +51,7 @@ public class TaskListController {
             @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result")
             @Positive(message = "{limit.positive}") Integer limit,
             @RequestParam(value = "sort", required = false)
-            @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted")
+            @ApiParam(example = "creation_time,update_time:desc", value = "How result must be sorted")
                     String sort,
             @RequestParam(value = "filter", required = false) @ApiParam(example = "like name 'Important'", value = "Filter of results") String filter,
             @RequestParam(value = "offset", required = false) @ApiParam(example = "0", value = "Offset") @PositiveOrZero(message = "{offset.positive_or_zero}")
@@ -74,7 +74,7 @@ public class TaskListController {
     })
     public FullTaskListResponse getList(
             @PathVariable("id") @ApiParam("List id") UUID listId,
-            @RequestParam(required = false) @ApiParam(example = "creation_date,update_date:desc", value = "How result must be sorted") String sort,
+            @RequestParam(required = false) @ApiParam(example = "creation_time,update_time:desc", value = "How result must be sorted") String sort,
             @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Max count of lists in result")
             @Positive(message = "{limit.positive}") Integer limit,
             @RequestParam(value = "offset", required = false) @ApiParam(example = "0", value = "Offset") @PositiveOrZero(message = "{offset.positive_or_zero}")
