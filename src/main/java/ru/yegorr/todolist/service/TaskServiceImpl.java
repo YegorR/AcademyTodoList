@@ -37,20 +37,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse createTask(CreateTaskRequest createTaskRequest) throws NotFoundException {
-        if (!taskListRepository.existsById(createTaskRequest.getListId())) {
-            throw new NotFoundException(String.format("List %s", createTaskRequest.getListId()));
-        }
+        TaskListEntity taskListEntity = taskListRepository.findById(createTaskRequest.getListId()).orElseThrow(
+                () -> new NotFoundException(String.format("List %s", createTaskRequest.getListId())));
 
         TaskEntity task = new TaskEntity();
         task.setId(UUID.randomUUID());
         task.setName(createTaskRequest.getName());
         task.setDescription(createTaskRequest.getDescription());
         task.setPriority(createTaskRequest.getPriority());
-
-        TaskListEntity taskListEntity = new TaskListEntity();
-        taskListEntity.setId(createTaskRequest.getListId());
-        // TODO(Шайдуко): тут лучше поднимать из репозитория, чем создавать новый объект,
-        //  хотя оно конечно работает и так
         task.setTaskList(taskListEntity);
 
         LocalDateTime time = LocalDateTime.now();
