@@ -36,9 +36,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse createTask(CreateTaskRequest createTaskRequest) throws NotFoundException {
-        TaskListEntity taskListEntity = taskListRepository.findById(createTaskRequest.getListId()).orElseThrow(
-                () -> new NotFoundException(String.format("List %s", createTaskRequest.getListId())));
+    public TaskResponse createTask(CreateTaskRequest createTaskRequest, UUID listId) throws NotFoundException {
+        TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(
+                () -> new NotFoundException(String.format("List %s", listId)));
 
         TaskEntity task = new TaskEntity();
         task.setId(UUID.randomUUID());

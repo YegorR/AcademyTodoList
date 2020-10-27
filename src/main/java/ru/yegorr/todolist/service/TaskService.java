@@ -17,7 +17,7 @@ public interface TaskService {
      * @param createTaskRequest данные для нового задания
      * @return TaskResponse
      */
-    TaskResponse createTask(CreateTaskRequest createTaskRequest) throws NotFoundException;
+    TaskResponse createTask(CreateTaskRequest createTaskRequest, UUID listId) throws NotFoundException;
 
     /**
      * Изменить задание

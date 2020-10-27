@@ -37,15 +37,16 @@ public class TaskController {
      * @param createTaskRequest данные для нового задания
      * @return TaskResponse
      */
-    @PostMapping("/task")
+    @PostMapping("/lists/{listId}/todos")
     @ApiOperation("Создать новоё задание")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Задание создано"),
             @ApiResponse(code = 404, message = "Список не найден")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponse createTask(@RequestBody @ApiParam("Данные для нового задания") @Valid CreateTaskRequest createTaskRequest) throws NotFoundException {
-        return taskService.createTask(createTaskRequest);
+    public TaskResponse createTask(@RequestBody @ApiParam("Данные для нового задания") @Valid CreateTaskRequest createTaskRequest,
+            @PathVariable("listId") @ApiParam("id списка") UUID listId) throws NotFoundException {
+        return taskService.createTask(createTaskRequest, listId);
     }
 
     /**
