@@ -31,4 +31,6 @@ public class TaskListResponse implements Serializable {
     private short color;
 
     private Priority priority;
+
+    private long userId = 1L;
 }
