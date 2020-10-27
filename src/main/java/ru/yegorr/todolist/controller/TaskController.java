@@ -52,6 +52,26 @@ public class TaskController {
     }
 
     /**
+     * Возвращает задание
+     *
+     * @param taskId id задания
+     * @param listId id списка
+     * @return задание
+     */
+    @GetMapping("/lists/{listId}/todos/{id}")
+    @ApiOperation("Получить задание")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Задание возвращено"),
+            @ApiResponse(code = 404, message = "Задание или список не найдены")
+    })
+    public TaskResponse getTask(
+            @PathVariable("id") @ApiParam("id задания") UUID taskId,
+            @PathVariable("listId") @ApiParam("id списка") UUID listId
+    ) throws NotFoundException {
+        return taskService.getTask(taskId, listId);
+    }
+
+    /**
      * Изменяет задание
      *
      * @param changeTaskRequest данные для изменения задания
