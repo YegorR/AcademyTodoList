@@ -75,15 +75,16 @@ public class TaskController {
      *
      * @param taskId id задания
      */
-    @PostMapping("/markDone/{id}")
+    @PostMapping("/lists/{listId}/todos/{id}/markDone")
     @ApiOperation("Отметить задание выполненным")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Задание отмечено выполненным"),
             @ApiResponse(code = 404, message = "Задание не найдено")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markDone(@PathVariable("id") @ApiParam("id задания") UUID taskId) throws NotFoundException {
-        taskService.markDone(taskId);
+    public void markDone(@PathVariable("id") @ApiParam("id задания") UUID taskId,
+            @PathVariable("listId") @ApiParam("id списка") UUID listId) throws NotFoundException {
+        taskService.markDone(taskId, listId);
     }
 
     /**

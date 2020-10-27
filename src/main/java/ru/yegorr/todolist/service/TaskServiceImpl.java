@@ -109,8 +109,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void markDone(UUID taskId) throws NotFoundException {
+    public void markDone(UUID taskId, UUID listId) throws NotFoundException {
+        TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         TaskEntity task = taskRepository.findById(taskId).orElseThrow(() -> new NotFoundException(String.format("Task %s", taskId)));
+        if (!taskListEntity.getTasks().contains(task)) {
+            throw new NotFoundException(String.format("Task %s in list %s", taskId, listId));
+        }
         task.setDone(true);
     }
 }

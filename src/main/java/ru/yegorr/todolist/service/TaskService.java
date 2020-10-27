@@ -39,5 +39,5 @@ public interface TaskService {
      * Отметить задание как выполненное
      * @param taskId id задания
      */
-    void markDone(UUID taskId) throws NotFoundException;
+    void markDone(UUID taskId, UUID listId) throws NotFoundException;
 }
