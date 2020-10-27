@@ -44,8 +44,10 @@ public class TaskController {
             @ApiResponse(code = 404, message = "Список не найден")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskResponse createTask(@RequestBody @ApiParam("Данные для нового задания") @Valid CreateTaskRequest createTaskRequest,
-            @PathVariable("listId") @ApiParam("id списка") UUID listId) throws NotFoundException {
+    public TaskResponse createTask(
+            @RequestBody @ApiParam("Данные для нового задания") @Valid CreateTaskRequest createTaskRequest,
+            @PathVariable("listId") @ApiParam("id списка") UUID listId
+    ) throws NotFoundException {
         return taskService.createTask(createTaskRequest, listId);
     }
 
@@ -82,8 +84,10 @@ public class TaskController {
             @ApiResponse(code = 404, message = "Задание не найдено")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markDone(@PathVariable("id") @ApiParam("id задания") UUID taskId,
-            @PathVariable("listId") @ApiParam("id списка") UUID listId) throws NotFoundException {
+    public void markDone(
+            @PathVariable("id") @ApiParam("id задания") UUID taskId,
+            @PathVariable("listId") @ApiParam("id списка") UUID listId
+    ) throws NotFoundException {
         taskService.markDone(taskId, listId);
     }
 
@@ -92,14 +96,17 @@ public class TaskController {
      *
      * @param taskId id задания
      */
-    @DeleteMapping("/task/{id}")
+    @DeleteMapping("/lists/{listId}/todos/{id}")
     @ApiOperation("Удалить задание")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Задание удалено"),
             @ApiResponse(code = 404, message = "Задание не найдено")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable("id") @ApiParam("id задания") UUID taskId) throws NotFoundException {
-        taskService.deleteTask(taskId);
+    public void deleteTask(
+            @PathVariable("id") @ApiParam("id задания") UUID taskId,
+            @PathVariable("listId") @ApiParam("id списка") UUID listId
+    ) throws NotFoundException {
+        taskService.deleteTask(taskId, listId);
     }
 }

@@ -33,7 +33,7 @@ public interface TaskService {
      *
      * @param taskId id задания
      */
-    void deleteTask(UUID taskId) throws NotFoundException;
+    void deleteTask(UUID taskId, UUID listId) throws NotFoundException;
 
     /**
      * Отметить задание как выполненное

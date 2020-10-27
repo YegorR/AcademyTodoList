@@ -87,12 +87,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(UUID taskId) throws NotFoundException {
-        if (!taskRepository.existsById(taskId)) {
-            throw new NotFoundException(String.format("Task %s", taskId));
-        }
-
-        taskRepository.deleteById(taskId);
+    public void deleteTask(UUID taskId, UUID listId) throws NotFoundException {
+        TaskEntity task = getAndCheckTask(taskId, listId);
+        taskRepository.delete(task);
     }
 
     private static TaskResponse generateTaskResponseFromEntity(TaskEntity entity) {
@@ -110,11 +107,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void markDone(UUID taskId, UUID listId) throws NotFoundException {
+        TaskEntity task = getAndCheckTask(taskId, listId);
+        task.setDone(true);
+    }
+
+    private TaskEntity getAndCheckTask(UUID taskId, UUID listId) throws NotFoundException {
         TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         TaskEntity task = taskRepository.findById(taskId).orElseThrow(() -> new NotFoundException(String.format("Task %s", taskId)));
         if (!taskListEntity.getTasks().contains(task)) {
             throw new NotFoundException(String.format("Task %s in list %s", taskId, listId));
         }
-        task.setDone(true);
+        return task;
     }
 }
