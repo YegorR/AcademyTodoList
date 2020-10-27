@@ -50,7 +50,7 @@ public class TaskListController {
     })
     public ListsResponse getLists(
             @RequestParam(value = "limit", required = false) @ApiParam(example = "10", value = "Максимальное количество списков")
-            @Positive(message = "{limit.positive}") Integer limit,
+            @PositiveOrZero(message = "{limit.positive_or_zero}") Integer limit,
             @RequestParam(value = "sort", required = false)
             @ApiParam(example = "creation_time,update_time:desc", value = "Сортировка") String sort,
             @RequestParam(value = "filter", required = false) @ApiParam(example = "like name 'Important'", value = "Фильтр") String filter,
