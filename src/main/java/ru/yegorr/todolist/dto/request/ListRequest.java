@@ -2,7 +2,7 @@ package ru.yegorr.todolist.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.*;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -18,5 +18,6 @@ public class ListRequest implements Serializable {
     @Length(max = 4096, message = "{name.length}")
     private String name;
 
+    @Range(min = 0, max = 255, message = "{color.range}")
     private Short color;
 }
