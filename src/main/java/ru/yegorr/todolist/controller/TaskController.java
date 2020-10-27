@@ -56,7 +56,7 @@ public class TaskController {
      * @param taskId            id задания
      * @return TaskResponse
      */
-    @PutMapping("/task/{id}")
+    @PutMapping("/lists/{listId}/todos/{id}")
     @ApiOperation("Изменить задание")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Задание изменено"),
@@ -64,9 +64,10 @@ public class TaskController {
     })
     public TaskResponse changeTask(
             @RequestBody @ApiParam("Данные для изменения задания") @Valid ChangeTaskRequest changeTaskRequest,
-            @PathVariable("id") @ApiParam("id задания") UUID taskId
+            @PathVariable("id") @ApiParam("id задания") UUID taskId,
+            @PathVariable("listId") @ApiParam("id возможно нового списка") UUID listId
     ) throws NotFoundException {
-        return taskService.changeTask(changeTaskRequest, taskId);
+        return taskService.changeTask(changeTaskRequest, taskId, listId);
     }
 
     /**

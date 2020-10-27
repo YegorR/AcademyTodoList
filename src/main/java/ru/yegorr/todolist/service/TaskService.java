@@ -26,7 +26,7 @@ public interface TaskService {
      * @param taskId            id задания
      * @return TaskResponse
      */
-    TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId) throws NotFoundException;
+    TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId, UUID listId) throws NotFoundException;
 
     /**
      * Удалить задание

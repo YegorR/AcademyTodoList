@@ -57,13 +57,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId) throws NotFoundException {
+    public TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId, UUID listId) throws NotFoundException {
         Optional<TaskEntity> taskOptional = taskRepository.findById(taskId);
         if (taskOptional.isEmpty()) {
             throw new NotFoundException(String.format("Task %s", taskId));
         }
-        if (!taskListRepository.existsById(changeTaskRequest.getListId())) {
-            throw new NotFoundException(String.format("List %s", changeTaskRequest.getListId()));
+        if (!taskListRepository.existsById(listId)) {
+            throw new NotFoundException(String.format("List %s", listId));
         }
 
         TaskEntity task = taskOptional.get();
@@ -74,9 +74,9 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(changeTaskRequest.getPriority());
 
         UUID oldListId = task.getTaskList().getId();
-        if (!oldListId.equals(changeTaskRequest.getListId())) {
-            TaskListEntity newTaskList = taskListRepository.findById(changeTaskRequest.getListId()).orElseThrow(
-                    () -> new NotFoundException(String.format("List %s", changeTaskRequest.getListId())));
+        if (!oldListId.equals(listId)) {
+            TaskListEntity newTaskList = taskListRepository.findById(listId).orElseThrow(
+                    () -> new NotFoundException(String.format("List %s", listId)));
             TaskListEntity oldTaskList = task.getTaskList();
             newTaskList.getTasks().add(task);
             oldTaskList.getTasks().remove(task);

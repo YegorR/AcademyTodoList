@@ -16,14 +16,11 @@ import java.util.UUID;
 @ApiModel(value = "Изменения задания", description = "Данные для изменения задания")
 public class ChangeTaskRequest implements Serializable {
 
-    @NotNull(message = "{id.notnull}")
-    private UUID listId;
-
     @NotBlank(message = "{name.notblank}")
-    @Length(max = 4096, message="{name.length}")
+    @Length(max = 4096, message = "{name.length}")
     private String name;
 
-    @Length(max = 4096, message="{description.length}")
+    @Length(max = 4096, message = "{description.length}")
     private String description;
 
     @NotNull(message = "{priority.notnull}")
