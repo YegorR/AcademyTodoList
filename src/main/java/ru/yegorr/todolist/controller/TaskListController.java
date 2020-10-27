@@ -71,8 +71,8 @@ public class TaskListController {
      * @param filter как результат должен быть отфильтрован
      * @return список с заданиями
      */
-    @GetMapping("/list/{id}")
-    @ApiOperation("Get list")
+    @GetMapping("/lists/{id}")
+    @ApiOperation("Получить лист")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Список возвращен"),
             @ApiResponse(code = 404, message = "Список не найден")
@@ -95,7 +95,7 @@ public class TaskListController {
      * @param taskList название для нового списка
      * @return TaskListResponse
      */
-    @PostMapping("/list")
+    @PostMapping("/lists")
     @ApiOperation(value = "Создать новый список")
     @ApiResponses({
             @ApiResponse(code = 201, message = "Список создан")
@@ -112,7 +112,7 @@ public class TaskListController {
      * @param listId   id списка
      * @return TaskListResponse
      */
-    @PutMapping("/list/{id}")
+    @PutMapping("/lists/{id}")
     @ApiOperation("Изменить список")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Список изменён"),
@@ -129,8 +129,8 @@ public class TaskListController {
      *
      * @param listId id списка
      */
-    @DeleteMapping("/list/{id}")
-    @ApiOperation("Удаляет список")
+    @DeleteMapping("/lists/{id}")
+    @ApiOperation("Удалить список")
     @ApiResponses({
             @ApiResponse(code = 204, message = "Список и его задания удалены"),
             @ApiResponse(code = 404, message = "Список не найден")
