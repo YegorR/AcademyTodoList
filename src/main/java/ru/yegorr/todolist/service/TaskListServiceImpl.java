@@ -58,7 +58,8 @@ public class TaskListServiceImpl implements TaskListService {
         listsActionParser = new ActionParser(
                 Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
-                        NAME_PROPERTY, ActionParser.PropertyType.STRING
+                        NAME_PROPERTY, ActionParser.PropertyType.STRING,
+                        PRIORITY_PROPERTY, ActionParser.PropertyType.PRIORITY
                 ),
                 propertyMapping
         );
@@ -73,7 +74,7 @@ public class TaskListServiceImpl implements TaskListService {
                 propertyMapping
         );
 
-        listsSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY), propertyMapping);
+        listsSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY), propertyMapping);
         tasksSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY, DONE_PROPERTY), propertyMapping);
     }
 
