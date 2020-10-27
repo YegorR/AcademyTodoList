@@ -26,6 +26,9 @@ public class TaskListEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "color")
+    private short color;
+
     @OneToMany(mappedBy = "taskList")
     private List<TaskEntity> tasks;
 }
