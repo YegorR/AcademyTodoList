@@ -1,6 +1,7 @@
 package ru.yegorr.todolist.service.filtering;
 
 import org.springframework.data.jpa.domain.Specification;
+import ru.yegorr.todolist.entity.Priority;
 
 import javax.persistence.criteria.*;
 import java.time.*;
@@ -67,8 +68,8 @@ public class FilterSpecification<T> implements Specification<T> {
                         Object value = action.getValue();
                         if (value instanceof LocalDateTime) {
                             yield moreOrLessPredicate(root, criteriaBuilder, (LocalDateTime)value);
-                        } else if (value instanceof Integer) {
-                            yield moreOrLessPredicate(root, criteriaBuilder, (Integer)value);
+                        } else if (value instanceof Priority) {
+                            yield moreOrLessPredicate(root, criteriaBuilder, ((Enum<Priority>)value).ordinal());
                         } else if (value instanceof Boolean) {
                             yield moreOrLessPredicate(root, criteriaBuilder, (Boolean)value);
                         } else if (value instanceof String) {

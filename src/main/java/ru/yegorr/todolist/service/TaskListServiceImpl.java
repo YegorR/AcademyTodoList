@@ -67,7 +67,7 @@ public class TaskListServiceImpl implements TaskListService {
                 Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         NAME_PROPERTY, ActionParser.PropertyType.STRING,
-                        PRIORITY_PROPERTY, ActionParser.PropertyType.INTEGER,
+                        PRIORITY_PROPERTY, ActionParser.PropertyType.PRIORITY,
                         DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN
                 ),
                 propertyMapping

@@ -1,5 +1,6 @@
 package ru.yegorr.todolist.service.filtering;
 
+import ru.yegorr.todolist.entity.Priority;
 import ru.yegorr.todolist.exception.ValidationFailsException;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import static ru.yegorr.todolist.service.filtering.Action.ActionType.*;
 public class ActionParser {
 
     public enum PropertyType {
-        STRING, INTEGER, TIME, BOOLEAN
+        STRING, PRIORITY, TIME, BOOLEAN
     }
 
     private final Map<String, PropertyType> propType;
@@ -106,7 +107,7 @@ public class ActionParser {
 
     private static Object readValue(Scanner scanner, ActionParser.PropertyType propertyType) throws ValidationFailsException {
         switch (propertyType) {
-            case STRING -> {
+            case STRING, PRIORITY -> {
                 if (!scanner.hasNext("'.*")) {
                     throw new ValidationFailsException("Wrong filter");
                 }
@@ -114,10 +115,16 @@ public class ActionParser {
                 if (value == null) {
                     throw new ValidationFailsException("Wrong filter");
                 }
-                return value.substring(1, value.length() - 1).replace("\\'", "'");
-            }
-            case INTEGER -> {
-                return scanner.nextInt();
+                value = value.substring(1, value.length() - 1).replace("\\'", "'");
+                if (propertyType == PropertyType.STRING) {
+                    return value;
+                }
+                try {
+                    return Priority.fromString(value);
+                } catch (IllegalArgumentException ex) {
+                    throw new ValidationFailsException("Wrong filter");
+                }
+
             }
             case TIME -> {
                 String dateString = scanner.next();
