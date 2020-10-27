@@ -3,6 +3,7 @@ package ru.yegorr.todolist.dto.request;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.hibernate.validator.constraints.*;
+import ru.yegorr.todolist.entity.Priority;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -20,4 +21,6 @@ public class ListRequest implements Serializable {
 
     @Range(min = 0, max = 255, message = "{color.range}")
     private Short color;
+
+    private Priority priority;
 }
