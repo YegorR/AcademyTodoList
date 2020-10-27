@@ -161,6 +161,7 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setCreationTime(taskList.getCreationTime());
         fullTaskListResponse.setUpdateTime(taskList.getUpdateTime());
         fullTaskListResponse.setColor(taskList.getColor());
+        fullTaskListResponse.setPriority(taskList.getPriority());
 
         long totalTasksCount = taskRepository.countAllByTaskList_Id(listId);
 
@@ -215,6 +216,7 @@ public class TaskListServiceImpl implements TaskListService {
         LocalDateTime time = LocalDateTime.now();
         taskList.setName(listRequest.getName());
         taskList.setColor(listRequest.getColor() == null ? 0 : listRequest.getColor());
+        taskList.setPriority(listRequest.getPriority() == null ? Priority.VERY_LOW : listRequest.getPriority());
         taskList.setCreationTime(time);
         taskList.setUpdateTime(time);
         taskList.setId(UUID.randomUUID());
@@ -229,6 +231,7 @@ public class TaskListServiceImpl implements TaskListService {
         taskList.setName(listRequest.getName());
         taskList.setUpdateTime(LocalDateTime.now());
         taskList.setColor(listRequest.getColor() == null ? 0 : listRequest.getColor());
+        taskList.setPriority(listRequest.getPriority() == null ? Priority.VERY_LOW : listRequest.getPriority());
         return generateTaskListResponse(taskList);
     }
 
@@ -248,6 +251,7 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setCreationTime(entity.getCreationTime());
         taskListResponse.setUpdateTime(entity.getUpdateTime());
         taskListResponse.setColor(entity.getColor());
+        taskListResponse.setPriority(entity.getPriority());
 
         boolean closed = true;
         if (entity.getTasks() != null) {
