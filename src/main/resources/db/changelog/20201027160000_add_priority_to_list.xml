@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="YegorR" id="20201027160000_7">
+        <!-- liquibase ignores check constraint by tag, so there is SQL -->
+        <addColumn tableName="list">
+            <column name="priority" type="SMALLINT" defaultValueNumeric="0"><constraints nullable="false"/></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="20201027160000_8" author="YegorR">
+        <sql>
+            ALTER TABLE list ADD CONSTRAINT list_priority_check CHECK (priority &gt;= 0 AND priority &lt;= 4)
+        </sql>
+    </changeSet>
+</databaseChangeLog>
