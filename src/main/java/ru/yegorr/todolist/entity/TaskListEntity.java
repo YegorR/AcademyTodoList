@@ -29,6 +29,10 @@ public class TaskListEntity {
     @Column(name = "color")
     private short color;
 
+    @Column(name = "priority")
+    @Enumerated(value = EnumType.ORDINAL)
+    private Priority priority;
+
     @OneToMany(mappedBy = "taskList")
     private List<TaskEntity> tasks;
 }
