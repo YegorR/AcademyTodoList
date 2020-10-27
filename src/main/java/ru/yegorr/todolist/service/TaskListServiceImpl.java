@@ -160,6 +160,7 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setName(taskList.getName());
         fullTaskListResponse.setCreationTime(taskList.getCreationTime());
         fullTaskListResponse.setUpdateTime(taskList.getUpdateTime());
+        fullTaskListResponse.setColor(taskList.getColor());
 
         long totalTasksCount = taskRepository.countAllByTaskList_Id(listId);
 
@@ -213,6 +214,7 @@ public class TaskListServiceImpl implements TaskListService {
 
         LocalDateTime time = LocalDateTime.now();
         taskList.setName(listRequest.getName());
+        taskList.setColor(listRequest.getColor() == null ? 0 : listRequest.getColor());
         taskList.setCreationTime(time);
         taskList.setUpdateTime(time);
         taskList.setId(UUID.randomUUID());
@@ -226,6 +228,7 @@ public class TaskListServiceImpl implements TaskListService {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         taskList.setName(listRequest.getName());
         taskList.setUpdateTime(LocalDateTime.now());
+        taskList.setColor(listRequest.getColor() == null ? 0 : listRequest.getColor());
         return generateTaskListResponse(taskList);
     }
 
@@ -244,6 +247,7 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setName(entity.getName());
         taskListResponse.setCreationTime(entity.getCreationTime());
         taskListResponse.setUpdateTime(entity.getUpdateTime());
+        taskListResponse.setColor(entity.getColor());
 
         boolean closed = true;
         for (TaskEntity task : entity.getTasks()) {
