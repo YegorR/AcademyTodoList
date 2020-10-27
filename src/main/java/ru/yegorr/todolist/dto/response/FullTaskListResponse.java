@@ -3,6 +3,7 @@ package ru.yegorr.todolist.dto.response;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import ru.yegorr.todolist.entity.Priority;
 import ru.yegorr.todolist.serializer.LocalDateTimeSerializer;
 
 import java.io.Serializable;
@@ -35,6 +36,8 @@ public class FullTaskListResponse implements Serializable {
     private boolean closed;
 
     private short color;
+
+    private Priority priority;
 
     private List<TaskResponse> tasks;
 }
