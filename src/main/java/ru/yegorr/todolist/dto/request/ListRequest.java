@@ -17,4 +17,6 @@ public class ListRequest implements Serializable {
     @NotBlank(message = "{name.notblank}")
     @Length(max = 4096, message = "{name.length}")
     private String name;
+
+    private Short color;
 }
