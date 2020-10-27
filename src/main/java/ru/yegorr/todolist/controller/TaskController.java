@@ -35,6 +35,7 @@ public class TaskController {
      * Создаёт новое задание
      *
      * @param createTaskRequest данные для нового задания
+     * @param listId id списка
      * @return TaskResponse
      */
     @PostMapping("/lists/{listId}/todos")
@@ -76,6 +77,7 @@ public class TaskController {
      *
      * @param changeTaskRequest данные для изменения задания
      * @param taskId            id задания
+     * @param listId id списка
      * @return TaskResponse
      */
     @PutMapping("/lists/{listId}/todos/{id}")
@@ -96,6 +98,7 @@ public class TaskController {
      * Отмечает задание как выполненное
      *
      * @param taskId id задания
+     * @param listId id списка
      */
     @PostMapping("/lists/{listId}/todos/{id}/markDone")
     @ApiOperation("Отметить задание выполненным")
@@ -115,6 +118,7 @@ public class TaskController {
      * Удаляет задание
      *
      * @param taskId id задания
+     * @param listId id списка
      */
     @DeleteMapping("/lists/{listId}/todos/{id}")
     @ApiOperation("Удалить задание")
