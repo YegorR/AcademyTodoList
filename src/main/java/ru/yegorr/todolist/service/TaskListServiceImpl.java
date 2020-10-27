@@ -250,12 +250,15 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setColor(entity.getColor());
 
         boolean closed = true;
-        for (TaskEntity task : entity.getTasks()) {
-            if (!task.isDone()) {
-                closed = false;
-                break;
+        if (entity.getTasks() != null) {
+            for (TaskEntity task : entity.getTasks()) {
+                if (!task.isDone()) {
+                    closed = false;
+                    break;
+                }
             }
         }
+
         taskListResponse.setClosed(closed);
         return taskListResponse;
     }
