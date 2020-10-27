@@ -34,5 +34,7 @@ public class FullTaskListResponse implements Serializable {
 
     private boolean closed;
 
+    private short color;
+
     private List<TaskResponse> tasks;
 }

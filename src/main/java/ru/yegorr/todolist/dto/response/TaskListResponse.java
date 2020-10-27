@@ -27,4 +27,6 @@ public class TaskListResponse implements Serializable {
 
     private boolean closed;
 
+    private short color;
+
 }
