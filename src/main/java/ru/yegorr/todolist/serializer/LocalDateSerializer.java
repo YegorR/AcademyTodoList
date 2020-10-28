@@ -9,16 +9,16 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Сериализатор для LocalDateTime -> дд-ММ-гггг-чч-мм-сс
+ * Сериализатор для LocalDate -> дд-ММ-гггг
  */
-public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
+public class LocalDateSerializer extends StdSerializer<LocalDate> {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     /**
      * Конструктор
      */
-    public LocalDateTimeSerializer() {
+    public LocalDateSerializer() {
         this(null);
     }
 
@@ -27,12 +27,12 @@ public class LocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
      *
      * @param t Class
      */
-    public LocalDateTimeSerializer(Class t) {
+    public LocalDateSerializer(Class t) {
         super(t);
     }
 
     @Override
-    public void serialize(LocalDateTime value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(LocalDate value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeString(formatter.format(value));
     }
 }
