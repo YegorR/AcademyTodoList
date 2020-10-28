@@ -139,4 +139,17 @@ public class TaskListController {
     public void deleteList(@PathVariable("id") @ApiParam("id списка") UUID listId) throws NotFoundException {
         taskListService.deleteList(listId);
     }
+
+    /**
+     * Удалаяет все списки и задания
+     */
+    @DeleteMapping("/lists")
+    @ApiOperation("Удалить все списки (ОПАСНО - ИСПОЛЬЗУЙТЕ ОСТОРОЖНО)")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Все списки и задания удалены")
+    })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAllLists() {
+        taskListService.deleteAllLists();
+    }
 }

@@ -251,6 +251,11 @@ public class TaskListServiceImpl implements TaskListService {
         taskListRepository.deleteById(listId);
     }
 
+    @Override
+    public void deleteAllLists() {
+        taskListRepository.deleteAll();
+    }
+
     private static TaskListResponse generateTaskListResponse(TaskListEntity entity) {
         TaskListResponse taskListResponse = new TaskListResponse();
         taskListResponse.setId(entity.getId());

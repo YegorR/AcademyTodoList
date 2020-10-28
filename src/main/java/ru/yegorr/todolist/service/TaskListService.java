@@ -59,4 +59,9 @@ public interface TaskListService {
      * @param listId id списка
      */
     void deleteList(UUID listId) throws NotFoundException;
+
+    /**
+     * Удалить все списки
+     */
+    void deleteAllLists();
 }
