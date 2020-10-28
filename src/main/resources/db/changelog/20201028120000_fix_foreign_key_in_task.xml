@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="YegorR" id="20201028120000_10">
+        <dropForeignKeyConstraint baseTableName="task" constraintName="fk_task_list"/>
+        <addForeignKeyConstraint baseTableName="task" baseColumnNames="task_list_id" constraintName="fk_task_list" referencedTableName="list"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

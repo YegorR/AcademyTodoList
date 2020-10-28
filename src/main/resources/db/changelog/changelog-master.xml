@@ -9,4 +9,5 @@
     <include file="20201027123000_add_color_to_list.xml" relativeToChangelogFile="true"/>
     <include file="20201027160000_add_priority_to_list.xml" relativeToChangelogFile="true"/>
     <include file="20201028110000_add_destination_date_to_task.xml" relativeToChangelogFile="true"/>
+    <include file="20201028120000_fix_foreign_key_in_task.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
