@@ -71,7 +71,8 @@ public class TaskListServiceImpl implements TaskListService {
                         UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         NAME_PROPERTY, ActionParser.PropertyType.STRING,
                         PRIORITY_PROPERTY, ActionParser.PropertyType.PRIORITY,
-                        DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN
+                        DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN,
+                        DESTINATION_DATE_PROPERTY, ActionParser.PropertyType.DATE
                 ),
                 propertyMapping
         );

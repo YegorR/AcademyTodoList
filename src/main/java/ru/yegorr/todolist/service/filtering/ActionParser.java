@@ -3,7 +3,7 @@ package ru.yegorr.todolist.service.filtering;
 import ru.yegorr.todolist.entity.Priority;
 import ru.yegorr.todolist.exception.ValidationFailsException;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -15,7 +15,7 @@ import static ru.yegorr.todolist.service.filtering.Action.ActionType.*;
 public class ActionParser {
 
     public enum PropertyType {
-        STRING, PRIORITY, TIME, BOOLEAN
+        STRING, PRIORITY, TIME, BOOLEAN, DATE
     }
 
     private final Map<String, PropertyType> propType;
@@ -129,6 +129,11 @@ public class ActionParser {
             case TIME -> {
                 String dateString = scanner.next();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
+                return LocalDateTime.parse(dateString, formatter);
+            }
+            case DATE -> {
+                String dateString = scanner.next();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 return LocalDate.parse(dateString, formatter);
             }
             case BOOLEAN -> {
