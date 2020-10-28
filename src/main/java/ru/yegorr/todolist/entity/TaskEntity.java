@@ -32,6 +32,9 @@ public class TaskEntity {
     @Column(name = "done")
     private boolean done;
 
+    @Column(name = "destination_date")
+    private LocalDate destinationDate;
+
     @Column(name = "priority")
     @Enumerated(EnumType.ORDINAL)
     private Priority priority;
