@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import ru.yegorr.todolist.entity.Priority;
-import ru.yegorr.todolist.serializer.LocalDateTimeSerializer;
+import ru.yegorr.todolist.serializer.*;
 
 import java.io.Serializable;
 import java.time.*;
@@ -34,4 +34,7 @@ public class TaskResponse implements Serializable {
     private Priority priority;
 
     private boolean done;
+
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate destinationDate;
 }
