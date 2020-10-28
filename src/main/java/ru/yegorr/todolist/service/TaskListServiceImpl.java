@@ -200,6 +200,7 @@ public class TaskListServiceImpl implements TaskListService {
             taskResponse.setDone(task.isDone());
             taskResponse.setPriority(task.getPriority());
             taskResponse.setName(task.getName());
+            taskResponse.setDestinationDate(task.getDestinationDate());
             tasks.add(taskResponse);
         }
         fullTaskListResponse.setOpenedTasksCount(openedTasksCount);

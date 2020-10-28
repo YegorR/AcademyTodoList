@@ -46,6 +46,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(createTaskRequest.getDescription());
         task.setPriority(createTaskRequest.getPriority());
         task.setTaskList(taskListEntity);
+        task.setDestinationDate(createTaskRequest.getDestinationDate());
 
         LocalDateTime time = LocalDateTime.now();
         task.setCreationTime(time);
@@ -72,6 +73,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDone(changeTaskRequest.isDone());
         task.setUpdateTime(LocalDateTime.now());
         task.setPriority(changeTaskRequest.getPriority());
+        task.setDestinationDate(changeTaskRequest.getDestinationDate());
 
         UUID oldListId = task.getTaskList().getId();
         if (!oldListId.equals(listId)) {
@@ -102,6 +104,7 @@ public class TaskServiceImpl implements TaskService {
         taskResponse.setPriority(entity.getPriority());
         taskResponse.setDone(entity.isDone());
         taskResponse.setListId(entity.getTaskList().getId());
+        taskResponse.setDestinationDate(entity.getDestinationDate());
         return taskResponse;
     }
 
