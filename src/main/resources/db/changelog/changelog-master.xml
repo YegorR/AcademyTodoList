@@ -5,7 +5,8 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <include file="20201011180000_main_structures.xml" relativeToChangelogFile="true"/>
     <include file="20201021180000_ids_from_serial_to_uuid.xml" relativeToChangelogFile="true"/>
-    <include file="20201023110000_from_date_to_timestamp.xml" relativeToChangelogFile="true" />
+    <include file="20201023110000_from_date_to_timestamp.xml" relativeToChangelogFile="true"/>
     <include file="20201027123000_add_color_to_list.xml" relativeToChangelogFile="true"/>
     <include file="20201027160000_add_priority_to_list.xml" relativeToChangelogFile="true"/>
+    <include file="20201028110000_add_destination_date_to_task.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
