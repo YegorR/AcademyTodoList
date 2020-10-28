@@ -38,9 +38,9 @@ public class TaskListServiceImpl implements TaskListService {
     private static final int DEFAULT_OFFSET = 0;
 
     private static final String CREATION_TIME_PROPERTY = "creationTime", UPDATE_TIME_PROPERTY = "updateTime", NAME_PROPERTY = "name",
-            PRIORITY_PROPERTY = "priority", DONE_PROPERTY = "done";
+            PRIORITY_PROPERTY = "priority", DONE_PROPERTY = "done", DESTINATION_DATE_PROPERTY = "destinationDate";
 
-    private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time";
+    private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time", DESTINATION_DATE_QUERY = "destination_date";
 
     /**
      * Конструктор
@@ -53,7 +53,9 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskListRepository = taskListRepository;
         this.taskRepository = taskRepository;
 
-        Map<String, String> propertyMapping = Map.of(CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY);
+        Map<String, String> propertyMapping = Map.of(CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY,
+                DESTINATION_DATE_QUERY, DESTINATION_DATE_PROPERTY
+        );
 
         listsActionParser = new ActionParser(
                 Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
@@ -69,13 +71,16 @@ public class TaskListServiceImpl implements TaskListService {
                         UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
                         NAME_PROPERTY, ActionParser.PropertyType.STRING,
                         PRIORITY_PROPERTY, ActionParser.PropertyType.PRIORITY,
-                        DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN
+                        DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN,
+                        DESTINATION_DATE_PROPERTY, ActionParser.PropertyType.DATE
                 ),
                 propertyMapping
         );
 
         listsSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY), propertyMapping);
-        tasksSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY, DONE_PROPERTY), propertyMapping);
+        tasksSorter = new ListsSorter(Set.of(
+                CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY, DONE_PROPERTY, DESTINATION_DATE_PROPERTY
+        ), propertyMapping);
     }
 
     @Override
@@ -200,6 +205,7 @@ public class TaskListServiceImpl implements TaskListService {
             taskResponse.setDone(task.isDone());
             taskResponse.setPriority(task.getPriority());
             taskResponse.setName(task.getName());
+            taskResponse.setDestinationDate(task.getDestinationDate());
             tasks.add(taskResponse);
         }
         fullTaskListResponse.setOpenedTasksCount(openedTasksCount);

@@ -1,12 +1,15 @@
 package ru.yegorr.todolist.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import ru.yegorr.todolist.entity.Priority;
+import ru.yegorr.todolist.serializer.LocalDateDeserializer;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * Запрос на создание задание
@@ -23,4 +26,7 @@ public class CreateTaskRequest implements Serializable {
 
     @NotNull(message = "{priority.notnull}")
     private Priority priority;
+
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate destinationDate;
 }

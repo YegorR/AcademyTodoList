@@ -32,8 +32,8 @@ public class FilterSpecification<T> implements Specification<T> {
     /**
      * Конструктор, когда нужно искать также по внешнему ключу
      *
-     * @param action действие фильтрации
-     * @param foreignKey внешний ключ
+     * @param action        действие фильтрации
+     * @param foreignKey    внешний ключ
      * @param foreignParent свойство внешнего ключа
      */
     public FilterSpecification(Action action, UUID foreignKey, String foreignParent) {
@@ -74,6 +74,8 @@ public class FilterSpecification<T> implements Specification<T> {
                             yield moreOrLessPredicate(root, criteriaBuilder, (Boolean)value);
                         } else if (value instanceof String) {
                             yield moreOrLessPredicate(root, criteriaBuilder, (String)value);
+                        } else if (value instanceof LocalDate) {
+                            yield moreOrLessPredicate(root, criteriaBuilder, (LocalDate)value);
                         } else {
                             throw new IllegalStateException("Unexpected value type in filter");
                         }
