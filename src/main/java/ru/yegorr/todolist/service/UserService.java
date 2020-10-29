@@ -2,7 +2,7 @@ package ru.yegorr.todolist.service;
 
 import ru.yegorr.todolist.dto.request.UserRequest;
 import ru.yegorr.todolist.dto.response.*;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 
 import java.util.UUID;
 
@@ -17,7 +17,7 @@ public interface UserService {
      * @param userRequest данные о пользователе
      * @return UserResponse
      */
-    UserResponse createUser(UserRequest userRequest);
+    UserResponse createUser(UserRequest userRequest) throws UniqueCheckFallsException;
 
     /**
      * Изменить пользователя
@@ -27,7 +27,7 @@ public interface UserService {
      * @return UserResponse
      * @throws NotFoundException пользователь не найден
      */
-    UserResponse changeUser(UserRequest userRequest, UUID userId) throws NotFoundException;
+    UserResponse changeUser(UserRequest userRequest, UUID userId) throws NotFoundException, UniqueCheckFallsException;
 
     /**
      * Получить пользователя
