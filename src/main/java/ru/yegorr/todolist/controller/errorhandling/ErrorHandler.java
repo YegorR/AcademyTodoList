@@ -103,6 +103,11 @@ public class ErrorHandler {
         return generateDefaultExceptionResponse(String.format("Field %s is not unique", exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ForbiddenException.class})
+    private static ResponseEntity<Object> handleForbidden(ForbiddenException exception) {
+        return generateDefaultExceptionResponse(exception.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     private static ResponseEntity<Object> generateDefaultExceptionResponse(String message, HttpStatus httpStatus) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(message);
