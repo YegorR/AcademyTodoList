@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Конструктор
+     *
      * @param userRepository userRepository
      */
     @Autowired
@@ -32,8 +33,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserRequest userRequest) throws UniqueCheckFallsException {
+        if (userRepository.existsByEmail(userRequest.getEmail())) {
+            throw new UniqueCheckFallsException("email");
+        }
+        if (userRepository.existsByNickname(userRequest.getNickname())) {
+            throw new UniqueCheckFallsException("nickname");
+        }
         UserEntity userEntity = new UserEntity();
-        checkAndFillUserEntity(userEntity, userRequest);
+        fillUserEntity(userEntity, userRequest);
         userEntity.setId(UUID.randomUUID());
         userEntity = userRepository.save(userEntity);
         return generateUserResponse(userEntity);
@@ -42,7 +49,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse changeUser(UserRequest userRequest, UUID userId) throws NotFoundException, UniqueCheckFallsException {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User %s", userId)));
-        checkAndFillUserEntity(userEntity, userRequest);
+        if (!userEntity.getEmail().equals(userRequest.getEmail()) && userRepository.existsByEmail(userRequest.getEmail())) {
+            throw new UniqueCheckFallsException("email");
+        }
+        if (!userEntity.getNickname().equals(userRequest.getNickname()) && userRepository.existsByNickname(userRequest.getNickname())) {
+            throw new UniqueCheckFallsException("nickname");
+        }
+        fillUserEntity(userEntity, userRequest);
         return generateUserResponse(userEntity);
     }
 
@@ -77,14 +90,7 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
-    private void checkAndFillUserEntity(UserEntity userEntity, UserRequest userRequest) throws UniqueCheckFallsException {
-        if (userRepository.existsByEmail(userRequest.getEmail())) {
-            throw new UniqueCheckFallsException("email");
-        }
-        if (userRepository.existsByNickname(userRequest.getNickname())) {
-            throw new UniqueCheckFallsException("nickname");
-        }
-
+    private void fillUserEntity(UserEntity userEntity, UserRequest userRequest) throws UniqueCheckFallsException {
         userEntity.setEmail(userRequest.getEmail());
         userEntity.setNickname(userRequest.getNickname());
         userEntity.setPassword(userRequest.getPassword());
