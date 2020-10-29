@@ -44,4 +44,7 @@
         <addUniqueConstraint tableName="user" columnNames="nickname"/>
         <addUniqueConstraint tableName="user" columnNames="email"/>
     </changeSet>
+    <changeSet id="20201029123000_14" author="YegorR">
+        <renameTable oldTableName="user" newTableName="user_account"/>
+    </changeSet>
 </databaseChangeLog>
