@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @ApiModel(value = "Пользователь (ответ)")
 public class UserResponse {
-    private UUID usrID;
+    private UUID userId;
 
     private String email;
 
