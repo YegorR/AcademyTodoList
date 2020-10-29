@@ -3,7 +3,7 @@ package ru.yegorr.todolist.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yegorr.todolist.dto.request.UserRequest;
+import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.UserEntity;
 import ru.yegorr.todolist.exception.*;
@@ -81,6 +81,20 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
+    @Override
+    public AuthResponse doAuth(AuthRequest authRequest) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
+        AuthResponse authResponse = new AuthResponse();
+        if (userEntityOptional.isEmpty()) {
+            authResponse.setSuccess(false);
+        } else {
+            UserEntity userEntity = userEntityOptional.get();
+            authResponse.setSuccess(true);
+            authResponse.setUserId(userEntity.getId());
+        }
+        return authResponse;
+    }
+
     private static UserResponse generateUserResponse(UserEntity userEntity) {
         UserResponse userResponse = new UserResponse();
         userResponse.setUserId(userEntity.getId());
@@ -90,7 +104,7 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
-    private void fillUserEntity(UserEntity userEntity, UserRequest userRequest) throws UniqueCheckFallsException {
+    private static void fillUserEntity(UserEntity userEntity, UserRequest userRequest) {
         userEntity.setEmail(userRequest.getEmail());
         userEntity.setNickname(userRequest.getNickname());
         userEntity.setPassword(userRequest.getPassword());

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.yegorr.todolist.entity.UserEntity;
 
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Репозиторий для пользователей
@@ -27,4 +27,13 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
      * @return true если не уникальный, иначе false
      */
     boolean existsByNickname(String nickname);
+
+    /**
+     * Находит пользователя по email и паролю
+     *
+     * @param email электронный адрес
+     * @param password пароль
+     * @return Optional<UserEntity>
+     */
+    Optional<UserEntity> findByEmailAndPassword(String email, String password);
 }

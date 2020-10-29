@@ -1,6 +1,6 @@
 package ru.yegorr.todolist.service;
 
-import ru.yegorr.todolist.dto.request.UserRequest;
+import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.exception.*;
 
@@ -23,7 +23,7 @@ public interface UserService {
      * Изменить пользователя
      *
      * @param userRequest данные о пользователя
-     * @param userId id пользователя
+     * @param userId      id пользователя
      * @return UserResponse
      * @throws NotFoundException пользователь не найден
      */
@@ -52,4 +52,12 @@ public interface UserService {
      * @throws NotFoundException пользователь не найден
      */
     void deleteUser(UUID userId) throws NotFoundException;
+
+    /**
+     * Провести аутентификацию
+     *
+     * @param authRequest authRequest
+     * @return authResponse
+     */
+    AuthResponse doAuth(AuthRequest authRequest);
 }
