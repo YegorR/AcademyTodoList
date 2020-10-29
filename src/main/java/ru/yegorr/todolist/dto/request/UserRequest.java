@@ -16,7 +16,7 @@ public class UserRequest implements Serializable {
     @Email(message = "{email.wrong}")
     private String email;
 
-    @NotBlank(message = "{nickname.notblank")
+    @NotBlank(message = "{nickname.notblank}")
     @Length(max = 256, message = "{nickname.length}")
     private String nickname;
 
@@ -24,7 +24,7 @@ public class UserRequest implements Serializable {
     @Length(max = 256, message = "{password.length}")
     private String password;
 
-    @NotBlank(message = "{password.notblank}")
-    @Pattern(regexp = "^(\\\\+\\\\d{1,3}( )?)?((\\\\(\\\\d{3}\\\\))|\\\\d{3})[- .]?\\\\d{3}[- .]?\\\\d{4}$")
+    @NotBlank(message = "{phone.notblank}")
+    @Pattern(regexp = "^(\\\\+\\\\d{1,3}( )?)?((\\\\(\\\\d{3}\\\\))|\\\\d{3})[- .]?\\\\d{3}[- .]?\\\\d{4}$", message = "{phone.wrong}")
     private String phone;
 }
