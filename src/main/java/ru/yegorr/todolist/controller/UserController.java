@@ -3,7 +3,6 @@ package ru.yegorr.todolist.controller;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.UserRequest;
@@ -17,7 +16,7 @@ import java.util.UUID;
 /**
  * Контроллер для запросов пользователей
  */
-@Controller
+@RestController
 @Validated
 @Api(tags = {"Пользователи"})
 public class UserController {
