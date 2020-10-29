@@ -35,4 +35,8 @@ public class TaskListEntity {
 
     @OneToMany(mappedBy = "taskList")
     private List<TaskEntity> tasks;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
