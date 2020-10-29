@@ -25,6 +25,6 @@ public class UserRequest implements Serializable {
     private String password;
 
     @NotBlank(message = "{phone.notblank}")
-    @Pattern(regexp = "^(\\\\+\\\\d{1,3}( )?)?((\\\\(\\\\d{3}\\\\))|\\\\d{3})[- .]?\\\\d{3}[- .]?\\\\d{4}$", message = "{phone.wrong}")
+    @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = "{phone.wrong}")
     private String phone;
 }
