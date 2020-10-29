@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.TaskResponse;
 import ru.yegorr.todolist.entity.*;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.*;
 
 import java.time.*;
@@ -36,9 +36,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponse createTask(CreateTaskRequest createTaskRequest, UUID listId) throws NotFoundException {
-        TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(
-                () -> new NotFoundException(String.format("List %s", listId)));
+    public TaskResponse createTask(CreateTaskRequest createTaskRequest, UUID listId, UUID userId) throws ApplicationException {
+        TaskListEntity taskListEntity = checkRightAndGetList(listId, userId);
 
         TaskEntity task = new TaskEntity();
         task.setId(UUID.randomUUID());
@@ -54,20 +53,19 @@ public class TaskServiceImpl implements TaskService {
         task.setDone(false);
 
         task = taskRepository.save(task);
-        return generateTaskResponseFromEntity(task);
+        return generateTaskResponseFromEntity(task, userId);
     }
 
     @Override
-    public TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId, UUID listId) throws NotFoundException {
+    public TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId, UUID listId, UUID userId) throws ApplicationException {
         Optional<TaskEntity> taskOptional = taskRepository.findById(taskId);
         if (taskOptional.isEmpty()) {
             throw new NotFoundException(String.format("Task %s", taskId));
         }
-        if (!taskListRepository.existsById(listId)) {
-            throw new NotFoundException(String.format("List %s", listId));
-        }
-
+        TaskListEntity newTaskList = checkRightAndGetList(listId, userId);
         TaskEntity task = taskOptional.get();
+        TaskListEntity oldTaskList = checkRightAndGetList(task.getTaskList().getId(), userId);
+
         task.setName(changeTaskRequest.getName());
         task.setDescription(changeTaskRequest.getDescription());
         task.setDone(changeTaskRequest.isDone());
@@ -75,26 +73,22 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(changeTaskRequest.getPriority());
         task.setDestinationDate(changeTaskRequest.getDestinationDate());
 
-        UUID oldListId = task.getTaskList().getId();
-        if (!oldListId.equals(listId)) {
-            TaskListEntity newTaskList = taskListRepository.findById(listId).orElseThrow(
-                    () -> new NotFoundException(String.format("List %s", listId)));
-            TaskListEntity oldTaskList = task.getTaskList();
+        if (!oldTaskList.equals(newTaskList)) {
             newTaskList.getTasks().add(task);
             oldTaskList.getTasks().remove(task);
             task.setTaskList(newTaskList);
         }
 
-        return generateTaskResponseFromEntity(task);
+        return generateTaskResponseFromEntity(task, userId);
     }
 
     @Override
-    public void deleteTask(UUID taskId, UUID listId) throws NotFoundException {
-        TaskEntity task = getAndCheckTask(taskId, listId);
+    public void deleteTask(UUID taskId, UUID listId, UUID userId) throws ApplicationException {
+        TaskEntity task = getAndCheckTask(taskId, listId, userId);
         taskRepository.delete(task);
     }
 
-    private static TaskResponse generateTaskResponseFromEntity(TaskEntity entity) {
+    private static TaskResponse generateTaskResponseFromEntity(TaskEntity entity, UUID userId) {
         TaskResponse taskResponse = new TaskResponse();
         taskResponse.setId(entity.getId());
         taskResponse.setName(entity.getName());
@@ -105,27 +99,36 @@ public class TaskServiceImpl implements TaskService {
         taskResponse.setDone(entity.isDone());
         taskResponse.setListId(entity.getTaskList().getId());
         taskResponse.setDestinationDate(entity.getDestinationDate());
+        taskResponse.setUserId(userId);
         return taskResponse;
     }
 
     @Override
-    public void markDone(UUID taskId, UUID listId) throws NotFoundException {
-        TaskEntity task = getAndCheckTask(taskId, listId);
+    public void markDone(UUID taskId, UUID listId, UUID userId) throws ApplicationException {
+        TaskEntity task = getAndCheckTask(taskId, listId, userId);
         task.setDone(true);
     }
 
     @Override
-    public TaskResponse getTask(UUID taskId, UUID listId) throws NotFoundException {
-        TaskEntity task = getAndCheckTask(taskId, listId);
-        return generateTaskResponseFromEntity(task);
+    public TaskResponse getTask(UUID taskId, UUID listId, UUID userId) throws ApplicationException {
+        TaskEntity task = getAndCheckTask(taskId, listId, userId);
+        return generateTaskResponseFromEntity(task, userId);
     }
 
-    private TaskEntity getAndCheckTask(UUID taskId, UUID listId) throws NotFoundException {
-        TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
+    private TaskEntity getAndCheckTask(UUID taskId, UUID listId, UUID userId) throws ApplicationException {
+        TaskListEntity taskListEntity = checkRightAndGetList(listId, userId);
         TaskEntity task = taskRepository.findById(taskId).orElseThrow(() -> new NotFoundException(String.format("Task %s", taskId)));
         if (!taskListEntity.getTasks().contains(task)) {
             throw new NotFoundException(String.format("Task %s in list %s", taskId, listId));
         }
         return task;
+    }
+
+    private TaskListEntity checkRightAndGetList(UUID listId, UUID userId) throws ApplicationException {
+        TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
+        if (!taskListEntity.getUser().getId().equals(userId)) {
+            throw new ForbiddenException();
+        }
+        return taskListEntity;
     }
 }

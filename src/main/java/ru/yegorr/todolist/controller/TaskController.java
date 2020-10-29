@@ -6,7 +6,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.TaskResponse;
-import ru.yegorr.todolist.exception.NotFoundException;
+import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.service.TaskService;
 
 import javax.validation.Valid;
@@ -36,6 +36,7 @@ public class TaskController {
      *
      * @param createTaskRequest данные для нового задания
      * @param listId id списка
+     * @param userId id пользователя
      * @return TaskResponse
      */
     @PostMapping("/lists/{listId}/todos")
@@ -47,9 +48,10 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponse createTask(
             @RequestBody @ApiParam("Данные для нового задания") @Valid CreateTaskRequest createTaskRequest,
-            @PathVariable("listId") @ApiParam("id списка") UUID listId
-    ) throws NotFoundException {
-        return taskService.createTask(createTaskRequest, listId);
+            @PathVariable("listId") @ApiParam("id списка") UUID listId,
+            @RequestParam("userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskService.createTask(createTaskRequest, listId, userId);
     }
 
     /**
@@ -57,6 +59,7 @@ public class TaskController {
      *
      * @param taskId id задания
      * @param listId id списка
+     * @param userId id пользователя
      * @return задание
      */
     @GetMapping("/lists/{listId}/todos/{id}")
@@ -67,9 +70,10 @@ public class TaskController {
     })
     public TaskResponse getTask(
             @PathVariable("id") @ApiParam("id задания") UUID taskId,
-            @PathVariable("listId") @ApiParam("id списка") UUID listId
-    ) throws NotFoundException {
-        return taskService.getTask(taskId, listId);
+            @PathVariable("listId") @ApiParam("id списка") UUID listId,
+            @RequestParam("userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskService.getTask(taskId, listId, userId);
     }
 
     /**
@@ -78,6 +82,7 @@ public class TaskController {
      * @param changeTaskRequest данные для изменения задания
      * @param taskId            id задания
      * @param listId id списка
+     * @param userId id пользователя
      * @return TaskResponse
      */
     @PutMapping("/lists/{listId}/todos/{id}")
@@ -89,9 +94,10 @@ public class TaskController {
     public TaskResponse changeTask(
             @RequestBody @ApiParam("Данные для изменения задания") @Valid ChangeTaskRequest changeTaskRequest,
             @PathVariable("id") @ApiParam("id задания") UUID taskId,
-            @PathVariable("listId") @ApiParam("id возможно нового списка") UUID listId
-    ) throws NotFoundException {
-        return taskService.changeTask(changeTaskRequest, taskId, listId);
+            @PathVariable("listId") @ApiParam("id возможно нового списка") UUID listId,
+            @RequestParam("userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskService.changeTask(changeTaskRequest, taskId, listId, userId);
     }
 
     /**
@@ -99,6 +105,7 @@ public class TaskController {
      *
      * @param taskId id задания
      * @param listId id списка
+     * @param userId id пользователя
      */
     @PostMapping("/lists/{listId}/todos/{id}/markDone")
     @ApiOperation("Отметить задание выполненным")
@@ -109,9 +116,10 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markDone(
             @PathVariable("id") @ApiParam("id задания") UUID taskId,
-            @PathVariable("listId") @ApiParam("id списка") UUID listId
-    ) throws NotFoundException {
-        taskService.markDone(taskId, listId);
+            @PathVariable("listId") @ApiParam("id списка") UUID listId,
+            @RequestParam("userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        taskService.markDone(taskId, listId, userId);
     }
 
     /**
@@ -119,6 +127,7 @@ public class TaskController {
      *
      * @param taskId id задания
      * @param listId id списка
+     * @param userId id пользователя
      */
     @DeleteMapping("/lists/{listId}/todos/{id}")
     @ApiOperation("Удалить задание")
@@ -129,8 +138,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(
             @PathVariable("id") @ApiParam("id задания") UUID taskId,
-            @PathVariable("listId") @ApiParam("id списка") UUID listId
-    ) throws NotFoundException {
-        taskService.deleteTask(taskId, listId);
+            @PathVariable("listId") @ApiParam("id списка") UUID listId,
+            @RequestParam("userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        taskService.deleteTask(taskId, listId, userId);
     }
 }
