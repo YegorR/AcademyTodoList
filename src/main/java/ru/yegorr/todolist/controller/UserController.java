@@ -105,8 +105,9 @@ public class UserController {
     @DeleteMapping("/users/{userId}")
     @ApiOperation("Удаляет пользователя")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Пользователь удалён")
+            @ApiResponse(code = 204, message = "Пользователь удалён")
     })
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("userId") @ApiParam("id пользователя") UUID userId) throws ApplicationException {
         userService.deleteUser(userId);
     }
