@@ -98,6 +98,11 @@ public class ErrorHandler {
         return generateDefaultExceptionResponse(String.format("Validation fails. %s", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({UniqueCheckFallsException.class})
+    private static ResponseEntity<Object> handleUniqueFalls(UniqueCheckFallsException exception) {
+        return generateDefaultExceptionResponse(String.format("Field %s is not unique", exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     private static ResponseEntity<Object> generateDefaultExceptionResponse(String message, HttpStatus httpStatus) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(message);
