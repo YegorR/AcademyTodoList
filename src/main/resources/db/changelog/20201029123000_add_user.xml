@@ -40,4 +40,8 @@
         <addForeignKeyConstraint baseTableName="list" baseColumnNames="user_id" constraintName="list_user_fk" referencedTableName="user"
                                  referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
     </changeSet>
+    <changeSet id="20201029123000_13" author="YegorR">
+        <addUniqueConstraint tableName="user" columnNames="nickname"/>
+        <addUniqueConstraint tableName="user" columnNames="email"/>
+    </changeSet>
 </databaseChangeLog>
