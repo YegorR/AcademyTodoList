@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="YegorR" id="20201029123000_11">
+        <createTable tableName="user">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_pkey"/>
+            </column>
+            <column name="email" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nickname" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="user">
+            <column name="id" value="2fb6eaf6-23eb-4f61-87fc-258d0b6348b7"/>
+            <column name="email" value="default@mail.com"/>
+            <column name="password" value="12345"/>
+            <column name="nickname" value="defaultUser"/>
+            <column name="phone" value="88005553535"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20201029123000_12" author="YegorR">
+        <addColumn tableName="list">
+            <column name="user_id" type="UUID"/>
+        </addColumn>
+        <update tableName="list">
+            <column name="user_id" value="2fb6eaf6-23eb-4f61-87fc-258d0b6348b7"/>
+        </update>
+        <addNotNullConstraint tableName="list" columnName="user_id"/>
+        <addForeignKeyConstraint baseTableName="list" baseColumnNames="user_id" constraintName="list_user_fk" referencedTableName="user"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>
