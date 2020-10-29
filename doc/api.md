@@ -491,15 +491,18 @@ name должен быть непустой строкой (c учётом *trim
 
 Успешно: 200
 
-    [
-        {
-                "userId": 3,
-                "email": "123@mail.ru",
-                "nickname": "nick",
-                "phone": "88005553535",
-            }
-    ]
-
+    {
+         "users":   
+            [
+                    {
+                        "userId": 3,
+                        "email": "123@mail.ru",
+                        "nickname": "nick",
+                        "phone": "88005553535",
+                    }
+            ]
+    }
+    
 ### Удалить пользователя
 
 #### DELETE /users/*userId*
