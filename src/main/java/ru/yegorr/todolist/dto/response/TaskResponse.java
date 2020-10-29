@@ -21,6 +21,8 @@ public class TaskResponse implements Serializable {
 
     private UUID listId;
 
+    private UUID userId;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime creationTime;
 

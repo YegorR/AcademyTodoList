@@ -19,9 +19,8 @@ public interface TaskListService {
      * @param filter как фильтровать, nullable
      * @param offset номер первого результата, nullable
      * @return списки
-     * @throws ValidationFailsException фильтр или сортировка составлены неверно
      */
-    ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException;
+    ListsResponse getLists(Integer limit, String sort, String filter, Integer offset, UUID userId) throws ApplicationException;
 
     /**
      * Получить список и задания в нём
@@ -32,10 +31,8 @@ public interface TaskListService {
      * @param filter как фильтровать, nullable
      * @param offset номер первого результата, nullable
      * @return список и задания в неём
-     * @throws NotFoundException нет листа с таким id
-     * @throws ValidationFailsException фильтр или сортировка составлены неверно
      */
-    FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset) throws NotFoundException, ValidationFailsException;
+    FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset, UUID userId) throws ApplicationException;
 
     /**
      * Создать новый список
@@ -43,7 +40,7 @@ public interface TaskListService {
      * @param listRequest данные для нового списка
      * @return TaskListResponse
      */
-    TaskListResponse createList(ListRequest listRequest);
+    TaskListResponse createList(ListRequest listRequest, UUID userId) throws ApplicationException;
 
     /**
      * Изменить список
@@ -52,13 +49,13 @@ public interface TaskListService {
      * @param listId      id списка
      * @return TaskListResponse
      */
-    TaskListResponse changeList(ListRequest listRequest, UUID listId) throws NotFoundException;
+    TaskListResponse changeList(ListRequest listRequest, UUID listId, UUID userId) throws ApplicationException;
 
     /**
      * Удалить список
      * @param listId id списка
      */
-    void deleteList(UUID listId) throws NotFoundException;
+    void deleteList(UUID listId, UUID userId) throws ApplicationException;
 
     /**
      * Удалить все списки

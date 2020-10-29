@@ -18,6 +18,7 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//TODO: если будет время, вынести работу с фильтрацией, сортировкой, пагинацией в отдельный компонент
 /**
  * Реализация TaskListService
  */
@@ -28,6 +29,8 @@ public class TaskListServiceImpl implements TaskListService {
     private final TaskListRepository taskListRepository;
 
     private final TaskRepository taskRepository;
+
+    private final UserRepository userRepository;
 
     private final ListsSorter listsSorter, tasksSorter;
 
@@ -47,11 +50,13 @@ public class TaskListServiceImpl implements TaskListService {
      *
      * @param taskListRepository репозиторий списков
      * @param taskRepository     репозиторий заданий
+     * @param userRepository     репозиторий пользователей
      */
     @Autowired
-    public TaskListServiceImpl(TaskListRepository taskListRepository, TaskRepository taskRepository) {
+    public TaskListServiceImpl(TaskListRepository taskListRepository, TaskRepository taskRepository, UserRepository userRepository) {
         this.taskListRepository = taskListRepository;
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
 
         Map<String, String> propertyMapping = Map.of(CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY,
                 DESTINATION_DATE_QUERY, DESTINATION_DATE_PROPERTY
@@ -84,7 +89,10 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset) throws ValidationFailsException {
+    public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset, UUID userId) throws ApplicationException {
+        if (!userRepository.existsById(userId)) {
+            throw new ForbiddenException();
+        }
         if (limit == null) {
             limit = DEFAULT_LIMIT;
         } else if (limit > MAX_LIMIT) {
@@ -101,7 +109,7 @@ public class TaskListServiceImpl implements TaskListService {
         }
 
         List<TaskListEntity> listOfLists = taskListRepository.findAll(
-                new FilterSpecification<>(listsActionParser.parse(filter)),
+                new FilterSpecification<>(listsActionParser.parse(filter), userId, "user"),
                 new OffsetLimitRequest(offset, limit, Sort.by(orders))
         ).toList();
 
@@ -152,10 +160,12 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset)
-            throws NotFoundException, ValidationFailsException {
+    public FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset, UUID userId)
+            throws ApplicationException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
-
+        if (!taskList.getUser().getId().equals(userId)) {
+            throw new ForbiddenException();
+        }
         List<Sort.Order> orders = tasksSorter.handleSortQuery(sort);
         if (orders == null) {
             orders = List.of(Sort.Order.desc(UPDATE_TIME_PROPERTY));
@@ -206,6 +216,7 @@ public class TaskListServiceImpl implements TaskListService {
             taskResponse.setPriority(task.getPriority());
             taskResponse.setName(task.getName());
             taskResponse.setDestinationDate(task.getDestinationDate());
+            taskResponse.setUserId(userId);
             tasks.add(taskResponse);
         }
         fullTaskListResponse.setOpenedTasksCount(openedTasksCount);
@@ -213,11 +224,13 @@ public class TaskListServiceImpl implements TaskListService {
         fullTaskListResponse.setTasks(tasks);
         fullTaskListResponse.setTotalTasksCount(totalTasksCount);
         fullTaskListResponse.setClosed(closed);
+        fullTaskListResponse.setUserId(userId);
         return fullTaskListResponse;
     }
 
     @Override
-    public TaskListResponse createList(ListRequest listRequest) {
+    public TaskListResponse createList(ListRequest listRequest, UUID userId) throws ApplicationException {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(ForbiddenException::new);
         TaskListEntity taskList = new TaskListEntity();
 
         LocalDateTime time = LocalDateTime.now();
@@ -227,14 +240,18 @@ public class TaskListServiceImpl implements TaskListService {
         taskList.setCreationTime(time);
         taskList.setUpdateTime(time);
         taskList.setId(UUID.randomUUID());
+        taskList.setUser(userEntity);
         taskListRepository.save(taskList);
 
         return generateTaskListResponse(taskList);
     }
 
     @Override
-    public TaskListResponse changeList(ListRequest listRequest, UUID listId) throws NotFoundException {
+    public TaskListResponse changeList(ListRequest listRequest, UUID listId, UUID userId) throws ApplicationException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
+        if (!taskList.getUser().getId().equals(userId)) {
+            throw new ForbiddenException();
+        }
         taskList.setName(listRequest.getName());
         taskList.setUpdateTime(LocalDateTime.now());
         taskList.setColor(listRequest.getColor() == null ? 0 : listRequest.getColor());
@@ -243,12 +260,13 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public void deleteList(UUID listId) throws NotFoundException {
-        if (!taskListRepository.existsById(listId)) {
-            throw new NotFoundException(String.format("List %s", listId));
+    public void deleteList(UUID listId, UUID userId) throws ApplicationException {
+        TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
+        if (!taskListEntity.getUser().getId().equals(userId)) {
+            throw new ForbiddenException();
         }
 
-        taskListRepository.deleteById(listId);
+        taskListRepository.delete(taskListEntity);
     }
 
     @Override
@@ -264,6 +282,7 @@ public class TaskListServiceImpl implements TaskListService {
         taskListResponse.setUpdateTime(entity.getUpdateTime());
         taskListResponse.setColor(entity.getColor());
         taskListResponse.setPriority(entity.getPriority());
+        taskListResponse.setUserId(entity.getUser().getId());
 
         boolean closed = true;
         if (entity.getTasks() != null) {

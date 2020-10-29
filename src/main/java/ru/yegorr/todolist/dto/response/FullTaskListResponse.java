@@ -39,7 +39,7 @@ public class FullTaskListResponse implements Serializable {
 
     private Priority priority;
 
-    private long userId = 1L;
+    private UUID userId;
 
     private List<TaskResponse> tasks;
 }

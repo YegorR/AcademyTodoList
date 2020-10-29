@@ -41,6 +41,7 @@ public class TaskListController {
      * @param sort   как результат должен быть отсортирован
      * @param filter как результат должен быть отфильтрован
      * @param offset смещение, с которого возвращать списки
+     * @param userId id пользователя
      * @return ListsResponse списки
      */
     @GetMapping("/lists")
@@ -55,10 +56,10 @@ public class TaskListController {
             @ApiParam(example = "creation_time,update_time:desc", value = "Сортировка") String sort,
             @RequestParam(value = "filter", required = false) @ApiParam(example = "like name 'Important'", value = "Фильтр") String filter,
             @RequestParam(value = "offset", required = false) @ApiParam(example = "0", value = "Смещение")
-            @PositiveOrZero(message = "{offset.positive_or_zero}")
-                    Integer offset
-    ) throws ValidationFailsException {
-        return taskListService.getLists(limit, sort, filter, offset);
+            @PositiveOrZero(message = "{offset.positive_or_zero}") Integer offset,
+            @RequestParam(value = "userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskListService.getLists(limit, sort, filter, offset, userId);
     }
 
     /**
@@ -69,6 +70,7 @@ public class TaskListController {
      * @param limit  максимальное количество заданий в результате
      * @param offset смещение, с которого должны возвращаться задания
      * @param filter как результат должен быть отфильтрован
+     * @param userId id пользователя
      * @return список с заданиями
      */
     @GetMapping("/lists/{id}")
@@ -84,15 +86,17 @@ public class TaskListController {
             @Positive(message = "{limit.positive}") Integer limit,
             @RequestParam(value = "offset", required = false) @ApiParam(example = "0", value = "Смещение")
             @PositiveOrZero(message = "{offset.positive_or_zero}") Integer offset,
-            @RequestParam(value = "filter", required = false) @ApiParam(example = "like name 'дело'", value = "Фильтр") String filter
-    ) throws NotFoundException, ValidationFailsException {
-        return taskListService.getList(listId, limit, sort, filter, offset);
+            @RequestParam(value = "filter", required = false) @ApiParam(example = "like name 'дело'", value = "Фильтр") String filter,
+            @RequestParam(value = "userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskListService.getList(listId, limit, sort, filter, offset, userId);
     }
 
     /**
      * Создаёт новый список
      *
      * @param taskList название для нового списка
+     * @param userId id пользователя
      * @return TaskListResponse
      */
     @PostMapping("/lists")
@@ -101,8 +105,11 @@ public class TaskListController {
             @ApiResponse(code = 201, message = "Список создан")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskListResponse createList(@RequestBody @ApiParam("Название нового списка") @Valid ListRequest taskList) {
-        return taskListService.createList(taskList);
+    public TaskListResponse createList(
+            @RequestBody @ApiParam("Название нового списка") @Valid ListRequest taskList,
+            @RequestParam(value = "userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskListService.createList(taskList, userId);
     }
 
     /**
@@ -110,6 +117,7 @@ public class TaskListController {
      *
      * @param taskList данные списка для изменения
      * @param listId   id списка
+     * @param userId id пользователя
      * @return TaskListResponse
      */
     @PutMapping("/lists/{id}")
@@ -119,15 +127,17 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "Список не найден")
     })
     public TaskListResponse changeList(
-            @RequestBody @ApiParam("Данные списка для изменения") @Valid ListRequest taskList, @PathVariable("id") @ApiParam("id листа") UUID listId
-    ) throws NotFoundException {
-        return taskListService.changeList(taskList, listId);
+            @RequestBody @ApiParam("Данные списка для изменения") @Valid ListRequest taskList, @PathVariable("id") @ApiParam("id листа") UUID listId,
+            @RequestParam(value = "userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        return taskListService.changeList(taskList, listId, userId);
     }
 
     /**
      * Удаляет список
      *
      * @param listId id списка
+     * @param userId id пользователя
      */
     @DeleteMapping("/lists/{id}")
     @ApiOperation("Удалить список")
@@ -136,8 +146,11 @@ public class TaskListController {
             @ApiResponse(code = 404, message = "Список не найден")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteList(@PathVariable("id") @ApiParam("id списка") UUID listId) throws NotFoundException {
-        taskListService.deleteList(listId);
+    public void deleteList(
+            @PathVariable("id") @ApiParam("id списка") UUID listId,
+            @RequestParam(value = "userId") @ApiParam("id пользователя") UUID userId
+    ) throws ApplicationException {
+        taskListService.deleteList(listId, userId);
     }
 
     /**
