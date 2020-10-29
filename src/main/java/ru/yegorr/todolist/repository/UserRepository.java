@@ -12,4 +12,19 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
+    /**
+     * Проверяет, уникальный ли email
+     *
+     * @param email электронный адрес
+     * @return true если не уникальный, иначе false
+     */
+    boolean existsByEmail(String email);
+
+    /**
+     * Проверяет, уникальный ли никнейм
+     *
+     * @param nickname никнейм
+     * @return true если не уникальный, иначе false
+     */
+    boolean existsByNickname(String nickname);
 }
