@@ -19,13 +19,7 @@ public class PagingFilterSortingProvider<T> {
 
     private final int maxLimit, defaultLimit, defaultOffset;
 
-    private final Set<String> sortProps;
-
     private final Sort.Order defaultSortOrder;
-
-    private final Map<String, ActionParser.PropertyType> filterProps;
-
-    private final Map<String, String> propsMapping;
 
     private final String parent;
 
@@ -57,10 +51,7 @@ public class PagingFilterSortingProvider<T> {
         this.maxLimit = maxLimit;
         this.defaultLimit = defaultLimit;
         this.defaultOffset = defaultOffset;
-        this.sortProps = sortProps;
         this.defaultSortOrder = defaultSortOrder;
-        this.filterProps = filterProps;
-        this.propsMapping = propsMapping;
         this.parent = parent;
         this.repository = repository;
 
