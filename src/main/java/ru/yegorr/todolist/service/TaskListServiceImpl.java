@@ -2,7 +2,6 @@ package ru.yegorr.todolist.service;
 
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.ListRequest;
@@ -10,15 +9,11 @@ import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.*;
-import ru.yegorr.todolist.service.filtering.*;
-import ru.yegorr.todolist.service.paging.OffsetLimitRequest;
-import ru.yegorr.todolist.service.sorting.ListsSorter;
 
-import java.time.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO: если будет время, вынести работу с фильтрацией, сортировкой, пагинацией в отдельный компонент
 /**
  * Реализация TaskListService
  */
@@ -32,18 +27,9 @@ public class TaskListServiceImpl implements TaskListService {
 
     private final UserRepository userRepository;
 
-    private final ListsSorter listsSorter, tasksSorter;
+    private PagingFilterSortingProvider<TaskListEntity> listProvider;
 
-    private final ActionParser listsActionParser, tasksActionParser;
-
-    private static final int DEFAULT_LIMIT = 10, MAX_LIMIT = 100;
-
-    private static final int DEFAULT_OFFSET = 0;
-
-    private static final String CREATION_TIME_PROPERTY = "creationTime", UPDATE_TIME_PROPERTY = "updateTime", NAME_PROPERTY = "name",
-            PRIORITY_PROPERTY = "priority", DONE_PROPERTY = "done", DESTINATION_DATE_PROPERTY = "destinationDate";
-
-    private static final String CREATION_TIME_QUERY = "creation_time", UPDATE_TIME_QUERY = "update_time", DESTINATION_DATE_QUERY = "destination_date";
+    private PagingFilterSortingProvider<TaskEntity> taskProvider;
 
     /**
      * Конструктор
@@ -57,35 +43,6 @@ public class TaskListServiceImpl implements TaskListService {
         this.taskListRepository = taskListRepository;
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
-
-        Map<String, String> propertyMapping = Map.of(CREATION_TIME_QUERY, CREATION_TIME_PROPERTY, UPDATE_TIME_QUERY, UPDATE_TIME_PROPERTY,
-                DESTINATION_DATE_QUERY, DESTINATION_DATE_PROPERTY
-        );
-
-        listsActionParser = new ActionParser(
-                Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
-                        UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
-                        NAME_PROPERTY, ActionParser.PropertyType.STRING,
-                        PRIORITY_PROPERTY, ActionParser.PropertyType.PRIORITY
-                ),
-                propertyMapping
-        );
-
-        tasksActionParser = new ActionParser(
-                Map.of(CREATION_TIME_PROPERTY, ActionParser.PropertyType.TIME,
-                        UPDATE_TIME_PROPERTY, ActionParser.PropertyType.TIME,
-                        NAME_PROPERTY, ActionParser.PropertyType.STRING,
-                        PRIORITY_PROPERTY, ActionParser.PropertyType.PRIORITY,
-                        DONE_PROPERTY, ActionParser.PropertyType.BOOLEAN,
-                        DESTINATION_DATE_PROPERTY, ActionParser.PropertyType.DATE
-                ),
-                propertyMapping
-        );
-
-        listsSorter = new ListsSorter(Set.of(CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY), propertyMapping);
-        tasksSorter = new ListsSorter(Set.of(
-                CREATION_TIME_PROPERTY, UPDATE_TIME_PROPERTY, NAME_PROPERTY, PRIORITY_PROPERTY, DONE_PROPERTY, DESTINATION_DATE_PROPERTY
-        ), propertyMapping);
     }
 
     @Override
@@ -93,25 +50,8 @@ public class TaskListServiceImpl implements TaskListService {
         if (!userRepository.existsById(userId)) {
             throw new ForbiddenException();
         }
-        if (limit == null) {
-            limit = DEFAULT_LIMIT;
-        } else if (limit > MAX_LIMIT) {
-            limit = DEFAULT_LIMIT;
-        }
 
-        if (offset == null) {
-            offset = 0;
-        }
-
-        List<Sort.Order> orders = listsSorter.handleSortQuery(sort);
-        if (orders == null) {
-            orders = List.of(Sort.Order.desc(UPDATE_TIME_PROPERTY));
-        }
-
-        List<TaskListEntity> listOfLists = taskListRepository.findAll(
-                new FilterSpecification<>(listsActionParser.parse(filter), userId, "user"),
-                new OffsetLimitRequest(offset, limit, Sort.by(orders))
-        ).toList();
+        List<TaskListEntity> listOfLists = listProvider.getResult(limit, offset, sort, filter, userId);
 
         long totalListCount = taskListRepository.count();
         OpenedAndClosedListsCount openedAndClosedLists = countOpenedAndClosedLists(listOfLists);
@@ -166,10 +106,6 @@ public class TaskListServiceImpl implements TaskListService {
         if (!taskList.getUser().getId().equals(userId)) {
             throw new ForbiddenException();
         }
-        List<Sort.Order> orders = tasksSorter.handleSortQuery(sort);
-        if (orders == null) {
-            orders = List.of(Sort.Order.desc(UPDATE_TIME_PROPERTY));
-        }
 
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
         fullTaskListResponse.setId(taskList.getId());
@@ -181,19 +117,7 @@ public class TaskListServiceImpl implements TaskListService {
 
         long totalTasksCount = taskRepository.countAllByTaskList_Id(listId);
 
-        if (limit == null) {
-            limit = DEFAULT_LIMIT;
-        } else if (limit > MAX_LIMIT) {
-            limit = DEFAULT_LIMIT;
-        }
-        if (offset == null) {
-            offset = DEFAULT_OFFSET;
-        }
-
-        List<TaskEntity> tasksEntities = taskRepository.findAll(
-                new FilterSpecification<>(tasksActionParser.parse(filter), listId, "taskList"),
-                new OffsetLimitRequest(offset, limit, Sort.by(orders))
-        ).stream().collect(Collectors.toList());
+        List<TaskEntity> tasksEntities = taskProvider.getResult(limit, offset, sort, filter, listId);
 
         List<TaskResponse> tasks = new ArrayList<>();
         int openedTasksCount = 0;
@@ -296,5 +220,21 @@ public class TaskListServiceImpl implements TaskListService {
 
         taskListResponse.setClosed(closed);
         return taskListResponse;
+    }
+
+    /**
+     * Сеттер для listProvider
+     */
+    @Autowired
+    public void setListProvider(PagingFilterSortingProvider<TaskListEntity> listProvider) {
+        this.listProvider = listProvider;
+    }
+
+    /**
+     * Сеттер для taskProvider
+     */
+    @Autowired
+    public void setTaskProvider(PagingFilterSortingProvider<TaskEntity> taskProvider) {
+        this.taskProvider = taskProvider;
     }
 }
