@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="YegorR" id="20201101213000_15">
+        <createTable tableName="role">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
+            </column>
+            <column name="name" type="varchar(256)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <insert tableName="role">
+            <column name="id" value="8428949e-5449-4f43-ba41-7bc709b74aa1"/>
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="role">
+            <column name="id" value="7721a0ef-30e0-4259-88c4-7eaeb4d7a09d"/>
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20201101213000_16" author="YegorR">
+        <createTable tableName="user_role">
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="user_id" constraintName="user_role_user_fk" referencedTableName="user_account"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="role_id" constraintName="user_role_role_fk" referencedTableName="role"
+                                 referencedColumnNames="id"/>
+        <sql>
+            INSERT INTO user_role (user_id, role_id)
+            SELECT id, '7721a0ef-30e0-4259-88c4-7eaeb4d7a09d'
+            FROM user_account;
+        </sql>
+        <sql>
+            INSERT INTO user_role (user_id, role_id)
+            SELECT id, '8428949e-5449-4f43-ba41-7bc709b74aa1'
+            FROM user_account;
+        </sql>
+    </changeSet>
+    <changeSet id="20201101213000_17" author="YegorR">
+        <dropForeignKeyConstraint baseTableName="user_role" constraintName="user_role_user_fk"/>
+        <dropForeignKeyConstraint baseTableName="user_role" constraintName="user_role_role_fk"/>
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="user_id" constraintName="user_role_user_fk" referencedTableName="user_account"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="user_role" baseColumnNames="role_id" constraintName="user_role_role_fk" referencedTableName="role"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

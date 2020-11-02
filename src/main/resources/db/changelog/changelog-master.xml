@@ -11,4 +11,5 @@
     <include file="20201028110000_add_destination_date_to_task.xml" relativeToChangelogFile="true"/>
     <include file="20201028120000_fix_foreign_key_in_task.xml" relativeToChangelogFile="true"/>
     <include file="20201029123000_add_user.xml" relativeToChangelogFile="true"/>
+    <include file="20201101213000_add_roles.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
