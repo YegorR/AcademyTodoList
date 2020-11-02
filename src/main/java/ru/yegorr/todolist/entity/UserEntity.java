@@ -3,7 +3,7 @@ package ru.yegorr.todolist.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Сущность пользователя
@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 @Table(name = "user_account")
 public class UserEntity {
+
     @Id
     @Column(name = "id")
     private UUID id;
@@ -27,4 +28,12 @@ public class UserEntity {
 
     @Column(name = "phone")
     private String phone;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")}
+    )
+    private Set<RoleEntity> roles;
 }
