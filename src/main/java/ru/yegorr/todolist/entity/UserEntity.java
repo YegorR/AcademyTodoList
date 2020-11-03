@@ -29,6 +29,9 @@ public class UserEntity {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "refresh_token")
+    private UUID refreshToken;
+
     @ManyToMany
     @JoinTable(
             name = "user_role",
