@@ -1,5 +1,7 @@
 package ru.yegorr.todolist.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.*;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.stereotype.Component;
@@ -38,5 +40,11 @@ public class JwtFilter extends AbstractAuthenticationProcessingFilter {
             return null;
         }
         return header.substring(7);
+    }
+
+    @Override
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 }
