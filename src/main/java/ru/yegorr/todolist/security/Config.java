@@ -34,7 +34,8 @@ public class Config extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/swagger-ui.html**",
                         "/webjars/**",
-                        "favicon.ico"
+                        "favicon.ico",
+                        "/swagger-ui/**"
                 ).permitAll().
                 anyRequest().hasRole(USER_ROLE);
     }
