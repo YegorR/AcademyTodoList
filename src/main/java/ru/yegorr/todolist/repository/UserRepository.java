@@ -36,4 +36,12 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
      * @return Optional<UserEntity>
      */
     Optional<UserEntity> findByEmailAndPassword(String email, String password);
+
+    /**
+     * Находит пользователя по refresh token
+     *
+     * @param refreshToken refresh token
+     * @return Optional<UserEntity>
+     */
+    Optional<UserEntity> findByRefreshToken(UUID refreshToken);
 }
