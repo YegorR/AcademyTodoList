@@ -17,9 +17,14 @@ public class Config extends WebSecurityConfigurerAdapter {
 
     private JwtFilter jwtFilter;
 
+    private static final String USER_ROLE = "USER", ADMIN_ROLE = "ADMIN";
+
     @Override
-    protected void configure(HttpSecurity http) {
-        http.addFilter(jwtFilter);
+    protected void configure(HttpSecurity http) throws Exception {
+        http.addFilter(jwtFilter).authorizeRequests().
+                antMatchers("/auth/logout").hasRole(USER_ROLE).
+                antMatchers("/auth/**").permitAll().
+                antMatchers( "/**").hasAnyRole(USER_ROLE, ADMIN_ROLE);
     }
 
     @Override
