@@ -2,6 +2,7 @@ package ru.yegorr.todolist.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,12 +24,19 @@ public class Config extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().
+        http.addFilterAt(jwtFilter, UsernamePasswordAuthenticationFilter.class).httpBasic().disable().csrf().disable().
+                authorizeRequests().
                 antMatchers("/auth/logout").hasRole(USER_ROLE).
                 antMatchers("/auth/**").permitAll().
-                antMatchers("/list/**").hasAnyRole(USER_ROLE, ADMIN_ROLE).
-                antMatchers("/user/**").hasAnyRole(USER_ROLE, ADMIN_ROLE).
-                anyRequest().permitAll();
+                antMatchers(
+                        HttpMethod.GET,
+                        "/v2/api-docs",
+                        "/swagger-resources/**",
+                        "/swagger-ui.html**",
+                        "/webjars/**",
+                        "favicon.ico"
+                ).permitAll().
+                anyRequest().hasRole(USER_ROLE);
     }
 
     @Override
