@@ -3,6 +3,7 @@ package ru.yegorr.todolist.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -31,6 +32,9 @@ public class UserEntity {
 
     @Column(name = "refresh_token")
     private UUID refreshToken;
+
+    @Column(name = "refresh_exp")
+    private LocalDateTime refreshExp;
 
     @ManyToMany
     @JoinTable(
