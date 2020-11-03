@@ -8,4 +8,9 @@
             <column name="refresh_token" type="UUID"/>
         </addColumn>
     </changeSet>
+    <changeSet id="20201103100000_19" author="YegorR">
+        <addColumn tableName="user_account">
+            <column name="refresh_exp" type="datetime"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
