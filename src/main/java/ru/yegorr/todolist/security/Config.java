@@ -26,7 +26,9 @@ public class Config extends WebSecurityConfigurerAdapter {
         http.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).authorizeRequests().
                 antMatchers("/auth/logout").hasRole(USER_ROLE).
                 antMatchers("/auth/**").permitAll().
-                antMatchers("/**").hasAnyRole(USER_ROLE, ADMIN_ROLE);
+                antMatchers("/list/**").hasAnyRole(USER_ROLE, ADMIN_ROLE).
+                antMatchers("/user/**").hasAnyRole(USER_ROLE, ADMIN_ROLE).
+                anyRequest().permitAll();
     }
 
     @Override
@@ -50,8 +52,9 @@ public class Config extends WebSecurityConfigurerAdapter {
         this.jwtFilter = jwtFilter;
     }
 
+    @Override
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 }

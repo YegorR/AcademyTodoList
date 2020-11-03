@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.ValidationFailsException;
 import ru.yegorr.todolist.repository.UserRepository;
-import ru.yegorr.todolist.security.exception.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -38,21 +37,28 @@ public class TokenAuthorizationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String token = (String)authentication.getCredentials();
+        if (token == null) {
+            return authentication;
+        }
         JwtInfo jwtInfo;
         try {
             jwtInfo = jwtManager.readToken(token);
         } catch (ValidationFailsException e) {
-            throw new BadTokenException("Token validation fails", e);
+            return authentication;
         }
         UUID userId = jwtInfo.getUserID();
         LocalDateTime expTime = jwtInfo.getExpiredTime();
 
         if (expTime.isBefore(LocalDateTime.now())) {
-            throw new ExpiredTokenException("Token is expired. Refresh or login");
+            return authentication;
         }
 
         TokenAuthentication tokenAuthentication = new TokenAuthentication(token);
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserIdNotFoundException("User id is not found"));
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            return tokenAuthentication;
+        }
+        UserEntity user = userOptional.get();
         Set<GrantedAuthority> roles = user.getRoles().
                 stream().
                 map(RoleEntity::getRole).

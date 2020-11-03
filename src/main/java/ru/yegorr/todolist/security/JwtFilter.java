@@ -2,36 +2,38 @@ package ru.yegorr.todolist.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.*;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.yegorr.todolist.security.exception.BadTokenException;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.*;
 import javax.servlet.http.*;
+import java.io.IOException;
 
 /**
- * Фильтр, проверяющий наличие JWT
+ * Фильтр, проводящий валидацию JWT
  */
 @Component
-public class JwtFilter extends AbstractAuthenticationProcessingFilter {
-
-    /**
-     * Конструктор
-     */
-    public JwtFilter() {
-        super("/**");
-    }
+public class JwtFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION = "Authorization";
 
+    private AuthenticationManager authenticationManager;
+
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = readTokenFromHeader(request);
+        TokenAuthentication tokenAuthentication;
         if (token == null || token.trim().isEmpty()) {
-            throw new BadTokenException("No token");
+            tokenAuthentication = new TokenAuthentication(null);
+        } else {
+            tokenAuthentication = new TokenAuthentication(token);
         }
-        return new TokenAuthentication(token);
+        Authentication auth = authenticationManager.authenticate(tokenAuthentication);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        filterChain.doFilter(request, response);
     }
 
     private static String readTokenFromHeader(HttpServletRequest request) {
@@ -42,9 +44,11 @@ public class JwtFilter extends AbstractAuthenticationProcessingFilter {
         return header.substring(7);
     }
 
-    @Override
+    /**
+     * @param authenticationManager authenticationManager
+     */
     @Autowired
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        super.setAuthenticationManager(authenticationManager);
+        this.authenticationManager = authenticationManager;
     }
 }
