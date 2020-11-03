@@ -12,7 +12,8 @@ import javax.validation.Valid;
 /**
  * Контроллер для аутентификации
  */
-@RestController("/auth")
+@RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
