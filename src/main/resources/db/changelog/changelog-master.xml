@@ -12,4 +12,5 @@
     <include file="20201028120000_fix_foreign_key_in_task.xml" relativeToChangelogFile="true"/>
     <include file="20201029123000_add_user.xml" relativeToChangelogFile="true"/>
     <include file="20201101213000_add_roles.xml" relativeToChangelogFile="true"/>
+    <include file="20201103100000_add_refresh_to_user.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
