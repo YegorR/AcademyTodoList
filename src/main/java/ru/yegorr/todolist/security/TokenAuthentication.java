@@ -13,7 +13,7 @@ public class TokenAuthentication implements Authentication {
 
     private boolean authenticated;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
 
     private UUID userId;
 
