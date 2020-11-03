@@ -1,4 +1,4 @@
-package ru.yegorr.todolist.service.sorting;
+package ru.yegorr.todolist.service;
 
 import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.AuthenticateResponse;
