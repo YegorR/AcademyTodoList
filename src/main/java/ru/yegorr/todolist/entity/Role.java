@@ -17,7 +17,7 @@ public enum Role {
     @JsonCreator
     public static Role fromString(String value) {
         if (value == null || value.isEmpty()) {
-            return ROLE_USER;
+            return null;
         }
         return valueOf(value.toUpperCase());
     }
