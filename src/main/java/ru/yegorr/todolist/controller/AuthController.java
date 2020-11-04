@@ -1,6 +1,8 @@
 package ru.yegorr.todolist.controller;
 
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.AuthenticateResponse;
@@ -14,6 +16,7 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/auth")
+@Api(tags = "Аутентификация")
 public class AuthController {
 
     private final AuthService authService;
@@ -35,7 +38,15 @@ public class AuthController {
      * @return токены
      */
     @PostMapping("/login")
-    public AuthenticateResponse authenticate(@RequestBody @Valid AuthenticateRequest authenticateRequest) throws ApplicationException {
+    @ApiOperation("Пройти аутентификацию")
+    @ApiResponses(
+            {
+                    @ApiResponse(code = 200, message = "Аутентификация прошла успешно"),
+                    @ApiResponse(code = 401, message = "Аутентификация провалилась")
+            }
+    )
+    public AuthenticateResponse authenticate(@RequestBody @Valid @ApiParam("Логин/пароль") AuthenticateRequest authenticateRequest)
+            throws ApplicationException {
         return authService.doAuthentication(authenticateRequest);
     }
 
@@ -46,7 +57,14 @@ public class AuthController {
      * @return токены
      */
     @PostMapping("/refresh")
-    public AuthenticateResponse refresh(@RequestBody @Valid RefreshRequest refreshRequest) throws ApplicationException {
+    @ApiOperation("Обновить токены")
+    @ApiResponses(
+            {
+                    @ApiResponse(code = 200, message = "Токены обновлены"),
+                    @ApiResponse(code = 401, message = "Аутентификация провалилась")
+            }
+    )
+    public AuthenticateResponse refresh(@RequestBody @Valid @ApiParam("Refresh token") RefreshRequest refreshRequest) throws ApplicationException {
         return authService.refresh(refreshRequest);
     }
 
@@ -54,6 +72,11 @@ public class AuthController {
      * Удаляет refresh token
      */
     @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("Сбросить refresh token")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Refresh token сбросен")
+    })
     public void logout() throws ApplicationException {
         authService.logout();
     }
