@@ -12,6 +12,8 @@ import ru.yegorr.todolist.repository.*;
 import java.time.*;
 import java.util.*;
 
+import static ru.yegorr.todolist.service.UserSecurityInformation.*;
+
 /**
  * Реализация TaskService
  */
@@ -58,13 +60,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId, UUID listId, UUID userId) throws ApplicationException {
-        Optional<TaskEntity> taskOptional = taskRepository.findById(taskId);
-        if (taskOptional.isEmpty()) {
-            throw new NotFoundException(String.format("Task %s", taskId));
-        }
-        TaskListEntity newTaskList = checkRightAndGetList(listId, userId);
-        TaskEntity task = taskOptional.get();
-        TaskListEntity oldTaskList = checkRightAndGetList(task.getTaskList().getId(), userId);
+        TaskEntity task = getAndCheckTask(taskId, listId, userId);
+        TaskListEntity oldTaskList = task.getTaskList();
 
         task.setName(changeTaskRequest.getName());
         task.setDescription(changeTaskRequest.getDescription());
@@ -73,7 +70,9 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(changeTaskRequest.getPriority());
         task.setDestinationDate(changeTaskRequest.getDestinationDate());
 
-        if (!oldTaskList.equals(newTaskList)) {
+        UUID newTaskListId = changeTaskRequest.getNewListId();
+        if (!(newTaskListId == null)) {
+            TaskListEntity newTaskList = checkRightAndGetList(listId, userId);
             newTaskList.getTasks().add(task);
             oldTaskList.getTasks().remove(task);
             task.setTaskList(newTaskList);
@@ -119,15 +118,16 @@ public class TaskServiceImpl implements TaskService {
         TaskListEntity taskListEntity = checkRightAndGetList(listId, userId);
         TaskEntity task = taskRepository.findById(taskId).orElseThrow(() -> new NotFoundException(String.format("Task %s", taskId)));
         if (!taskListEntity.getTasks().contains(task)) {
-            throw new NotFoundException(String.format("Task %s in list %s", taskId, listId));
+            throw new NotFoundException(String.format("Task %s", taskId));
         }
         return task;
     }
 
     private TaskListEntity checkRightAndGetList(UUID listId, UUID userId) throws ApplicationException {
+        checkAdminOrThisUser(userId);
         TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         if (!taskListEntity.getUser().getId().equals(userId)) {
-            throw new ForbiddenException();
+            throw new NotFoundException(String.format("List %s", listId));
         }
         return taskListEntity;
     }
