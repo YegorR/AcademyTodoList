@@ -108,6 +108,11 @@ public class ErrorHandler {
         return generateDefaultExceptionResponse(exception.getMessage(), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler({NotAuthorizeException.class})
+    private static ResponseEntity<Object> handleNotAuthorize(NotAuthorizeException exception) {
+        return generateDefaultExceptionResponse(exception.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
     private static ResponseEntity<Object> generateDefaultExceptionResponse(String message, HttpStatus httpStatus) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();
         exceptionResponse.setMessage(message);
