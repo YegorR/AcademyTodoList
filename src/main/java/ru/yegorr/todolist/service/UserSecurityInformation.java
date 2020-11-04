@@ -41,6 +41,12 @@ public class UserSecurityInformation {
                 .contains(Role.ROLE_ADMIN.name());
     }
 
+    /**
+     * Проверяет, пользователь админ или определённый пользователь
+     *
+     * @param userId id пользователь
+     * @throws ForbiddenException если не админ и не определённый пользователь
+     */
     public static void checkAdminOrThisUser(UUID userId) throws ForbiddenException {
         if (!(isAdmin() || getUserId().equals(userId))) {
             throw new ForbiddenException();
