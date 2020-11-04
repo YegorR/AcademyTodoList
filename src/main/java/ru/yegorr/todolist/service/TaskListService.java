@@ -60,5 +60,5 @@ public interface TaskListService {
     /**
      * Удалить все списки
      */
-    void deleteAllLists();
+    void deleteAllLists() throws ApplicationException;
 }

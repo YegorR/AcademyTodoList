@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yegorr.todolist.service.UserSecurityInformation.*;
+
 /**
  * Реализация TaskListService
  */
@@ -47,8 +49,9 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public ListsResponse getLists(Integer limit, String sort, String filter, Integer offset, UUID userId) throws ApplicationException {
+        checkAdminOrThisUser(userId);
         if (!userRepository.existsById(userId)) {
-            throw new ForbiddenException();
+            throw new NotFoundException(String.format("User %s", userId));
         }
 
         List<TaskListEntity> listOfLists = listProvider.getResult(limit, offset, sort, filter, userId);
@@ -104,8 +107,9 @@ public class TaskListServiceImpl implements TaskListService {
             throws ApplicationException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         if (!taskList.getUser().getId().equals(userId)) {
-            throw new ForbiddenException();
+            throw new NotFoundException(String.format("List %s for user %s", listId, userId));
         }
+        checkAdminOrThisUser(userId);
 
         FullTaskListResponse fullTaskListResponse = new FullTaskListResponse();
         fullTaskListResponse.setId(taskList.getId());
@@ -154,7 +158,8 @@ public class TaskListServiceImpl implements TaskListService {
 
     @Override
     public TaskListResponse createList(ListRequest listRequest, UUID userId) throws ApplicationException {
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(ForbiddenException::new);
+        checkAdminOrThisUser(userId);
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User %s", userId)));
         TaskListEntity taskList = new TaskListEntity();
 
         LocalDateTime time = LocalDateTime.now();
@@ -174,8 +179,9 @@ public class TaskListServiceImpl implements TaskListService {
     public TaskListResponse changeList(ListRequest listRequest, UUID listId, UUID userId) throws ApplicationException {
         TaskListEntity taskList = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         if (!taskList.getUser().getId().equals(userId)) {
-            throw new ForbiddenException();
+            throw new NotFoundException(String.format("List %s for user %s", listId, userId));
         }
+        checkAdminOrThisUser(userId);
         taskList.setName(listRequest.getName());
         taskList.setUpdateTime(LocalDateTime.now());
         taskList.setColor(listRequest.getColor() == null ? 0 : listRequest.getColor());
@@ -187,14 +193,18 @@ public class TaskListServiceImpl implements TaskListService {
     public void deleteList(UUID listId, UUID userId) throws ApplicationException {
         TaskListEntity taskListEntity = taskListRepository.findById(listId).orElseThrow(() -> new NotFoundException(String.format("List %s", listId)));
         if (!taskListEntity.getUser().getId().equals(userId)) {
-            throw new ForbiddenException();
+            throw new NotFoundException(String.format("List %s for user %s", listId, userId));
         }
+        checkAdminOrThisUser(userId);
 
         taskListRepository.delete(taskListEntity);
     }
 
     @Override
-    public void deleteAllLists() {
+    public void deleteAllLists() throws ForbiddenException {
+        if (!isAdmin()) {
+            throw new ForbiddenException();
+        }
         taskListRepository.deleteAll();
     }
 
