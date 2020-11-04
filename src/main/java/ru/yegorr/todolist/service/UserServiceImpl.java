@@ -48,10 +48,12 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = new UserEntity();
         fillUserEntity(userEntity, userRequest);
         userEntity.setId(UUID.randomUUID());
-        List<RoleEntity> roles = new ArrayList<>();
-        RoleEntity role = roleRepository.getByRole(Role.ROLE_USER).orElseThrow(() -> new ApplicationException("No role in db"));
-        roles.add(role);
-        userEntity.setRoles(roles);
+
+        Role role = userRequest.getRole();
+        if (role == null) {
+            role = Role.ROLE_USER;
+        }
+        userEntity.setRoles(getRoleEntities(role));
         userEntity = userRepository.save(userEntity);
         return generateUserResponse(userEntity);
     }
@@ -70,6 +72,12 @@ public class UserServiceImpl implements UserService {
             throw new UniqueCheckFallsException("nickname");
         }
         fillUserEntity(userEntity, userRequest);
+
+        Role role = userRequest.getRole();
+        if (role != null) {
+            userEntity.setRoles(getRoleEntities(role));
+        }
+
         return generateUserResponse(userEntity);
     }
 
@@ -112,6 +120,13 @@ public class UserServiceImpl implements UserService {
         userResponse.setEmail(userEntity.getEmail());
         userResponse.setNickname(userEntity.getNickname());
         userResponse.setPhone(userEntity.getPhone());
+
+        List<Role> roles = userEntity.getRoles().stream().map(RoleEntity::getRole).collect(Collectors.toList());
+        if (roles.contains(Role.ROLE_ADMIN)) {
+            userResponse.setRole(Role.ROLE_ADMIN);
+        } else if (roles.contains(Role.ROLE_USER)) {
+            userResponse.setRole(Role.ROLE_USER);
+        }
         return userResponse;
     }
 
@@ -120,5 +135,19 @@ public class UserServiceImpl implements UserService {
         userEntity.setNickname(userRequest.getNickname());
         userEntity.setPassword(userRequest.getPassword());
         userEntity.setPhone(userRequest.getPhone());
+    }
+
+    private List<RoleEntity> getRoleEntities(Role role) throws ApplicationException {
+        if (role == Role.ROLE_ADMIN && !isAdmin()) {
+            throw new ForbiddenException();
+        }
+        List<RoleEntity> roles = new ArrayList<>();
+        RoleEntity roleEntity = roleRepository.getByRole(Role.ROLE_USER).orElseThrow(() -> new ApplicationException("No role in db"));
+        roles.add(roleEntity);
+        if (role == Role.ROLE_ADMIN) {
+            RoleEntity adminEntity = roleRepository.getByRole(Role.ROLE_ADMIN).orElseThrow(() -> new ApplicationException("No role in db"));
+            roles.add(adminEntity);
+        }
+        return roles;
     }
 }
