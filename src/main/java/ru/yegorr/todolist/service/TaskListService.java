@@ -18,6 +18,7 @@ public interface TaskListService {
      * @param sort   как сортировать, nullable
      * @param filter как фильтровать, nullable
      * @param offset номер первого результата, nullable
+     * @param userId id пользователя
      * @return списки
      */
     ListsResponse getLists(Integer limit, String sort, String filter, Integer offset, UUID userId) throws ApplicationException;
@@ -30,6 +31,7 @@ public interface TaskListService {
      * @param sort   как сортировать, nullable
      * @param filter как фильтровать, nullable
      * @param offset номер первого результата, nullable
+     * @param userId id пользователя
      * @return список и задания в неём
      */
     FullTaskListResponse getList(UUID listId, Integer limit, String sort, String filter, Integer offset, UUID userId) throws ApplicationException;
@@ -38,6 +40,7 @@ public interface TaskListService {
      * Создать новый список
      *
      * @param listRequest данные для нового списка
+     * @param userId id пользователя
      * @return TaskListResponse
      */
     TaskListResponse createList(ListRequest listRequest, UUID userId) throws ApplicationException;
@@ -47,6 +50,7 @@ public interface TaskListService {
      *
      * @param listRequest данные для изменения списка
      * @param listId      id списка
+     * @param userId id пользователя
      * @return TaskListResponse
      */
     TaskListResponse changeList(ListRequest listRequest, UUID listId, UUID userId) throws ApplicationException;
@@ -54,6 +58,7 @@ public interface TaskListService {
     /**
      * Удалить список
      * @param listId id списка
+     * @param userId id пользователя
      */
     void deleteList(UUID listId, UUID userId) throws ApplicationException;
 
