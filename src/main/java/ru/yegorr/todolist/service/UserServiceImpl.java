@@ -12,6 +12,8 @@ import ru.yegorr.todolist.repository.UserRepository;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.yegorr.todolist.service.UserSecurityInformation.*;
+
 /**
  * Реализация UserService
  */
@@ -47,7 +49,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse changeUser(UserRequest userRequest, UUID userId) throws NotFoundException, UniqueCheckFallsException {
+    public UserResponse changeUser(UserRequest userRequest, UUID userId) throws ApplicationException {
+        if (!(isAdmin() || getUserId().equals(userId))) {
+            throw new ForbiddenException();
+        }
+
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User %s", userId)));
         if (!userEntity.getEmail().equals(userRequest.getEmail()) && userRepository.existsByEmail(userRequest.getEmail())) {
             throw new UniqueCheckFallsException("email");
@@ -60,13 +66,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUser(UUID userId) throws NotFoundException {
+    public UserResponse getUser(UUID userId) throws ApplicationException {
+        if (!(isAdmin() || getUserId().equals(userId))) {
+            throw new ForbiddenException();
+        }
+
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(String.format("User %s", userId)));
         return generateUserResponse(userEntity);
     }
 
     @Override
-    public UsersResponse getAllUsers() {
+    public UsersResponse getAllUsers() throws ApplicationException {
+        if (!isAdmin()) {
+            throw new ForbiddenException();
+        }
         List<UserResponse> users = userRepository.findAll().stream().map(UserServiceImpl::generateUserResponse).collect(Collectors.toList());
         UsersResponse usersResponse = new UsersResponse();
         usersResponse.setUsers(users);
@@ -74,25 +87,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(UUID userId) throws NotFoundException {
+    public void deleteUser(UUID userId) throws ApplicationException {
+        if (!(isAdmin() || getUserId().equals(userId))) {
+            throw new ForbiddenException();
+        }
+
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException(String.format("User %s", userId));
         }
         userRepository.deleteById(userId);
-    }
-
-    @Override
-    public AuthResponse doAuth(AuthRequest authRequest) {
-        Optional<UserEntity> userEntityOptional = userRepository.findByEmailAndPassword(authRequest.getEmail(), authRequest.getPassword());
-        AuthResponse authResponse = new AuthResponse();
-        if (userEntityOptional.isEmpty()) {
-            authResponse.setSuccess(false);
-        } else {
-            UserEntity userEntity = userEntityOptional.get();
-            authResponse.setSuccess(true);
-            authResponse.setUserId(userEntity.getId());
-        }
-        return authResponse;
     }
 
     private static UserResponse generateUserResponse(UserEntity userEntity) {

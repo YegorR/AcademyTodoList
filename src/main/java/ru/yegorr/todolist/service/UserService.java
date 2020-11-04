@@ -17,7 +17,7 @@ public interface UserService {
      * @param userRequest данные о пользователе
      * @return UserResponse
      */
-    UserResponse createUser(UserRequest userRequest) throws UniqueCheckFallsException;
+    UserResponse createUser(UserRequest userRequest) throws ApplicationException;
 
     /**
      * Изменить пользователя
@@ -25,39 +25,28 @@ public interface UserService {
      * @param userRequest данные о пользователя
      * @param userId      id пользователя
      * @return UserResponse
-     * @throws NotFoundException пользователь не найден
      */
-    UserResponse changeUser(UserRequest userRequest, UUID userId) throws NotFoundException, UniqueCheckFallsException;
+    UserResponse changeUser(UserRequest userRequest, UUID userId) throws ApplicationException;
 
     /**
      * Получить пользователя
      *
      * @param userId id пользователя
      * @return UserResponse
-     * @throws NotFoundException пользователь не найден
      */
-    UserResponse getUser(UUID userId) throws NotFoundException;
+    UserResponse getUser(UUID userId) throws ApplicationException;
 
     /**
      * Получить всех пользователей
      *
      * @return UserResponse
      */
-    UsersResponse getAllUsers();
+    UsersResponse getAllUsers() throws ApplicationException;
 
     /**
      * Удалить пользователя
      *
      * @param userId id пользователя
-     * @throws NotFoundException пользователь не найден
      */
-    void deleteUser(UUID userId) throws NotFoundException;
-
-    /**
-     * Провести аутентификацию
-     *
-     * @param authRequest authRequest
-     * @return authResponse
-     */
-    AuthResponse doAuth(AuthRequest authRequest);
+    void deleteUser(UUID userId) throws ApplicationException;
 }
