@@ -34,5 +34,5 @@ public class ChangeTaskRequest implements Serializable {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate destinationDate;
 
-    private UUID newListId; //TODO: написать про поле в документации
+    private UUID newListId;
 }

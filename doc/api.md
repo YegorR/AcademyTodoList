@@ -427,10 +427,11 @@ name должен быть непустой строкой (c учётом *trim
     	"description": "Необходимо СРОЧНО написать курсовую",
     	"priority": "VERY_LOW",
     	"done": true,
-    	"destinationDate": "02-12-2020"
+    	"destinationDate": "02-12-2020",
+    	"newListId": "2"
     }
 
-*name* должен быть непустой строкой (c учётом *trim*). *description* и *destinationDate* не обязательные параметры.
+*name* должен быть непустой строкой (c учётом *trim*). *description*, *destinationDate*, *newListId* не обязательные параметры. 
 
 #### Ответ:
 
