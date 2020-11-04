@@ -162,7 +162,7 @@ public class TaskListController {
             @ApiResponse(code = 204, message = "Все списки и задания удалены")
     })
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllLists() {
+    public void deleteAllLists() throws ApplicationException {
         taskListService.deleteAllLists();
     }
 }
