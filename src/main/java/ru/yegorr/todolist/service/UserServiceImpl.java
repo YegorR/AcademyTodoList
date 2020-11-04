@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.*;
 import ru.yegorr.todolist.dto.response.*;
-import ru.yegorr.todolist.entity.UserEntity;
+import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.*;
-import ru.yegorr.todolist.repository.UserRepository;
+import ru.yegorr.todolist.repository.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,18 +23,22 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     /**
      * Конструктор
      *
      * @param userRepository userRepository
+     * @param roleRepository roleRepository
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
-    public UserResponse createUser(UserRequest userRequest) throws UniqueCheckFallsException {
+    public UserResponse createUser(UserRequest userRequest) throws ApplicationException {
         if (userRepository.existsByEmail(userRequest.getEmail())) {
             throw new UniqueCheckFallsException("email");
         }
@@ -44,6 +48,10 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = new UserEntity();
         fillUserEntity(userEntity, userRequest);
         userEntity.setId(UUID.randomUUID());
+        List<RoleEntity> roles = new ArrayList<>();
+        RoleEntity role = roleRepository.getByRole(Role.ROLE_USER).orElseThrow(() -> new ApplicationException("No role in db"));
+        roles.add(role);
+        userEntity.setRoles(roles);
         userEntity = userRepository.save(userEntity);
         return generateUserResponse(userEntity);
     }
