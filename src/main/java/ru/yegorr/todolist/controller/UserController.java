@@ -93,7 +93,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Пользователи получены")
     })
-    public UsersResponse getUsers() {
+    public UsersResponse getUsers() throws ApplicationException {
         return userService.getAllUsers();
     }
 
@@ -110,20 +110,5 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("userId") @ApiParam("id пользователя") UUID userId) throws ApplicationException {
         userService.deleteUser(userId);
-    }
-
-    /**
-     * Провести аутентификацию
-     *
-     * @param authRequest данные аутентификаци
-     * @return authResponse
-     */
-    @PostMapping("/auth")
-    @ApiOperation("Аутентификация")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Аутентификация проведена (успешно или не успешно)")
-    })
-    public AuthResponse doAuth(@RequestBody @Valid @ApiParam("Данные аутентификации") AuthRequest authRequest) {
-        return userService.doAuth(authRequest);
     }
 }
