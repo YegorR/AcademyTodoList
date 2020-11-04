@@ -39,7 +39,7 @@ public class AuthServiceImplementation implements AuthService {
     @Override
     public AuthenticateResponse doAuthentication(AuthenticateRequest authenticateRequest) throws ApplicationException {
         UserEntity user = userRepository.findByEmailAndPassword(authenticateRequest.getEmail(), authenticateRequest.getPassword()).
-                orElseThrow(() -> new NotAuthorizeException("User not found"));
+                orElseThrow(() -> new NotAuthorizeException("User or password is wrong"));
        return generateTokens(user);
     }
 
