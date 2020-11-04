@@ -16,6 +16,7 @@ public interface TaskService {
      *
      * @param taskId id задания
      * @param listId id листа
+     * @param userId id пользователя
      * @return задание
      * @throws NotFoundException если задание или лист не найдены
      */
@@ -26,6 +27,7 @@ public interface TaskService {
      *
      * @param createTaskRequest данные для нового задания
      * @param listId id листа
+     * @param userId id пользователя
      * @return TaskResponse
      */
     TaskResponse createTask(CreateTaskRequest createTaskRequest, UUID listId, UUID userId) throws ApplicationException;
@@ -36,6 +38,7 @@ public interface TaskService {
      * @param changeTaskRequest данные для изменения задания
      * @param taskId            id задания
      * @param listId id листа
+     * @param userId id пользователя
      * @return TaskResponse
      */
     TaskResponse changeTask(ChangeTaskRequest changeTaskRequest, UUID taskId, UUID listId, UUID userId) throws ApplicationException;
@@ -45,6 +48,7 @@ public interface TaskService {
      *
      * @param taskId id задания
      * @param listId id листа
+     * @param userId id пользователя
      */
     void deleteTask(UUID taskId, UUID listId, UUID userId) throws ApplicationException;
 
@@ -52,6 +56,7 @@ public interface TaskService {
      * Отметить задание как выполненное
      * @param taskId id задания
      * @param listId id листа
+     * @param userId id пользователя
      */
     void markDone(UUID taskId, UUID listId, UUID userId) throws ApplicationException;
 }
