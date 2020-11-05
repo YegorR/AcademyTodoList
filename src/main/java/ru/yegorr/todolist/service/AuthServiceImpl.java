@@ -8,7 +8,7 @@ import ru.yegorr.todolist.dto.response.AuthenticateResponse;
 import ru.yegorr.todolist.entity.UserEntity;
 import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.UserRepository;
-import ru.yegorr.todolist.security.JwtManager;
+import ru.yegorr.todolist.security.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,11 +18,13 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-public class AuthServiceImplementation implements AuthService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
     private JwtManager jwtManager;
+
+    private Encoder encoder;
 
     private long accessTokenSecondPeriod, refreshTokenSecondPeriod;
 
@@ -32,22 +34,22 @@ public class AuthServiceImplementation implements AuthService {
      * @param userRepository userRepository
      */
     @Autowired
-    public AuthServiceImplementation(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public AuthenticateResponse doAuthentication(AuthenticateRequest authenticateRequest) throws ApplicationException {
-        UserEntity user = userRepository.findByEmailAndPassword(authenticateRequest.getEmail(), authenticateRequest.getPassword()).
+        UserEntity user = userRepository.findByEmailAndPassword(authenticateRequest.getEmail(), encoder.encryptPassword(authenticateRequest.getPassword())).
                 orElseThrow(() -> new NotAuthorizeException("User or password is wrong"));
-       return generateTokens(user);
+        return generateTokens(user);
     }
 
     @Override
     public AuthenticateResponse refresh(RefreshRequest refreshRequest) throws ApplicationException {
         final String REFRESH_IS_WRONG = "Refresh token is wrong or expired";
 
-        try{
+        try {
             UUID userRefreshToken = UUID.fromString(refreshRequest.getRefreshToken());
             UserEntity user = userRepository.findByRefreshToken(userRefreshToken).orElseThrow(() -> new NotAuthorizeException(REFRESH_IS_WRONG));
             LocalDateTime now = LocalDateTime.now();
@@ -61,7 +63,6 @@ public class AuthServiceImplementation implements AuthService {
         } catch (IllegalArgumentException ex) {
             throw new NotAuthorizeException(REFRESH_IS_WRONG);
         }
-
     }
 
     private AuthenticateResponse generateTokens(UserEntity user) {
@@ -111,5 +112,13 @@ public class AuthServiceImplementation implements AuthService {
     @Value("${refresh.token.period}")
     public void setRefreshTokenSecondPeriod(long refreshTokenSecondPeriod) {
         this.refreshTokenSecondPeriod = refreshTokenSecondPeriod;
+    }
+
+    /**
+     * @param encoder encoder
+     */
+    @Autowired
+    public void setEncoder(Encoder encoder) {
+        this.encoder = encoder;
     }
 }

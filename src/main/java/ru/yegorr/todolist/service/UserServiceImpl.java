@@ -1,6 +1,6 @@
 package ru.yegorr.todolist.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yegorr.todolist.dto.request.*;
@@ -8,6 +8,7 @@ import ru.yegorr.todolist.dto.response.*;
 import ru.yegorr.todolist.entity.*;
 import ru.yegorr.todolist.exception.*;
 import ru.yegorr.todolist.repository.*;
+import ru.yegorr.todolist.security.Encoder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,6 +25,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
+
+    private Encoder encoder;
 
     /**
      * Конструктор
@@ -130,10 +133,10 @@ public class UserServiceImpl implements UserService {
         return userResponse;
     }
 
-    private static void fillUserEntity(UserEntity userEntity, UserRequest userRequest) {
+    private void fillUserEntity(UserEntity userEntity, UserRequest userRequest) {
         userEntity.setEmail(userRequest.getEmail());
         userEntity.setNickname(userRequest.getNickname());
-        userEntity.setPassword(userRequest.getPassword());
+        userEntity.setPassword(encoder.encryptPassword(userRequest.getPassword()));
         userEntity.setPhone(userRequest.getPhone());
     }
 
@@ -149,5 +152,15 @@ public class UserServiceImpl implements UserService {
             roles.add(adminEntity);
         }
         return roles;
+    }
+
+    /**
+     * Устанавдливает encoder
+     *
+     * @param encoder encoder
+     */
+    @Autowired
+    public void setEncoder(Encoder encoder) {
+        this.encoder = encoder;
     }
 }
