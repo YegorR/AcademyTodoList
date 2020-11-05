@@ -37,6 +37,7 @@ public class Config extends WebSecurityConfigurerAdapter {
                         "favicon.ico",
                         "/swagger-ui/**"
                 ).permitAll().
+                antMatchers(HttpMethod.POST, "/users").permitAll().
                 anyRequest().hasRole(USER_ROLE);
     }
 
