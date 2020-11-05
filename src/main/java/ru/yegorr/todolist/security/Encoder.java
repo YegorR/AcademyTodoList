@@ -27,4 +27,15 @@ public class Encoder {
     public String encryptPassword(String password) {
         return encoder.encode(password);
     }
+
+    /**
+     * Проверят пароль на подлинность по хэшу
+     *
+     * @param rawPassword "сырой" пароль
+     * @param hash "хэш"
+     * @return true, если пароль подлинный, иначе false
+     */
+    public boolean check(String rawPassword, String hash) {
+        return encoder.matches(rawPassword, hash);
+    }
 }
