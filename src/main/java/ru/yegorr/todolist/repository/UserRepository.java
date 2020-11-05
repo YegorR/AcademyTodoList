@@ -29,13 +29,12 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     boolean existsByNickname(String nickname);
 
     /**
-     * Находит пользователя по email и паролю
+     * Находит пользователя по email
      *
      * @param email электронный адрес
-     * @param password пароль
-     * @return Optional<UserEntity>
+     * @return пользователь
      */
-    Optional<UserEntity> findByEmailAndPassword(String email, String password);
+    Optional<UserEntity> findByEmail(String email);
 
     /**
      * Находит пользователя по refresh token
