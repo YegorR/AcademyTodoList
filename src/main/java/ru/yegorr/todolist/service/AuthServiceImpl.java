@@ -40,8 +40,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthenticateResponse doAuthentication(AuthenticateRequest authenticateRequest) throws ApplicationException {
-        UserEntity user = userRepository.findByEmailAndPassword(authenticateRequest.getEmail(), encoder.encryptPassword(authenticateRequest.getPassword())).
-                orElseThrow(() -> new NotAuthorizeException("User or password is wrong"));
+        UserEntity user = userRepository.findByEmail(authenticateRequest.getEmail()).orElseThrow(() -> new NotAuthorizeException("User or password is wrong"));
+        if (!encoder.check(authenticateRequest.getPassword(), user.getPassword())) {
+            throw new NotAuthorizeException("user or password is wrong");
+        }
         return generateTokens(user);
     }
 
